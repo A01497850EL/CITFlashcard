@@ -1,0 +1,4 @@
+# Project specific
+flashcards.db
+.env
+static/uploads/
