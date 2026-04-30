@@ -6,10 +6,9 @@ db = SqliteDatabase("flashcards.db")
 class BaseModel(Model):
     class Meta:
         database = db
-# Edited by bareera
 # Peewee ORM models for Deck
 class Deck(BaseModel):
-    name = CharField()
+    name = CharField(unique=True)
     description = CharField(null=True)
     tags = CharField(null=True)
     created_at = DateTimeField(default=datetime.now)

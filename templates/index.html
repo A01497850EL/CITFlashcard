@@ -1,30 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Your Decks</h1>
 
-<!-- Create deck form -->
- <!-- Edited by bareera-->
-<h2>Create Deck</h2>
-<form action="/deck/create" method="POST">
-    <!-- Deck Name (required) -->
-    <input type="text" name="name" placeholder="Deck Name" required>
-    <!-- Description (optional) -->
-    <input type="text" name="description" placeholder="Description">
-    <!-- Tags (optional) -->
-    <input type="text" name="tags" placeholder="Tags">
-    <button type="submit">Create Deck</button>
-</form>
+<h1>Welcome to Flashy</h1>
 
-<!-- Deck list -->
-{% for deck in decks %}
-    <a href="/deck/{{ deck.id }}">
-        <div class="deck-card">
-            <h2>{{ deck.name }}</h2>
-        </div>
-    </a>
-{% else %}
-    <p>No decks yet — create one above.</p>
-{% endfor %}
+<p>Create and study flashcards easily.</p>
+
+<a href="/decks">Go to your decks</a>
 
 {% endblock %}

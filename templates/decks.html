@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="/">← Back to Home</a>
+
+<h1>Your Decks</h1>
+
+<!-- CREATE DECK FORM -->
+<h2>Create Deck</h2>
+<form action="/decks/create" method="POST">
+    <input type="text" name="name" placeholder="Deck Name" required>
+    <input type="text" name="description" placeholder="Description">
+    <input type="text" name="tags" placeholder="Tags">
+    <button type="submit">Create Deck</button>
+</form>
+
+<hr>
+
+<!-- DECK LIST -->
+{% for deck in decks %}
+    <div>
+        <a href="/decks/{{ deck.id }}">
+            <h3>{{ deck.name }}</h3>
+        </a>
+    </div>
+{% else %}
+    <p>No decks yet — create one above.</p>
+{% endfor %}
+
+{% endblock %}
