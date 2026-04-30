@@ -1,29 +1,27 @@
-import sqlite3
+from peewee import *
+
+db = SqliteDatabase("flashcards.db")
+
+class BaseModel(Model):
+    class Meta:
+        database = db
+
+class Deck(BaseModel):
+    name = CharField()
+    created_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+
+class Card(BaseModel):
+    deck = ForeignKeyField(Deck, backref="cards", on_delete="CASCADE")
+    front = CharField()
+    back = CharField()
+    mastered = BooleanField(default=False)
 
 def init_db():
-    conn = sqlite3.connect("flashcards.db")
-    cur = conn.cursor()
-
-    cur.executescript("""
-        CREATE TABLE IF NOT EXISTS decks (
-            id         INTEGER PRIMARY KEY AUTOINCREMENT,
-            name       TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS cards (
-            id       INTEGER PRIMARY KEY AUTOINCREMENT,
-            deck_id  INTEGER NOT NULL,
-            front    TEXT NOT NULL,
-            back     TEXT NOT NULL,
-            mastered BOOLEAN DEFAULT 0,
-            FOREIGN KEY (deck_id) REFERENCES decks(id)
-        );
-    """)
-
-    conn.commit()
-    conn.close()
+    db.connect()
+    db.create_tables([Deck, Card], safe=True)
+    db.close()
     print("Database initialized.")
 
 if __name__ == "__main__":
     init_db()
+
