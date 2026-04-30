@@ -1,14 +1,19 @@
 from peewee import *
+from datetime import datetime
 
 db = SqliteDatabase("flashcards.db")
 
 class BaseModel(Model):
     class Meta:
         database = db
-
+# Edited by bareera
+# Peewee ORM models for Deck
 class Deck(BaseModel):
     name = CharField()
-    created_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+    description = CharField(null=True)
+    tags = CharField(null=True)
+    created_at = DateTimeField(default=datetime.now)
+
 
 class Card(BaseModel):
     deck = ForeignKeyField(Deck, backref="cards", on_delete="CASCADE")

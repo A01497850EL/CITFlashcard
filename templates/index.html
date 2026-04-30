@@ -4,9 +4,16 @@
 <h1>Your Decks</h1>
 
 <!-- Create deck form -->
+ <!-- Edited by bareera-->
+<h2>Create Deck</h2>
 <form action="/deck/create" method="POST">
-    <input type="text" name="name" placeholder="Deck name" required>
-    <button type="submit">+ New Deck</button>
+    <!-- Deck Name (required) -->
+    <input type="text" name="name" placeholder="Deck Name" required>
+    <!-- Description (optional) -->
+    <input type="text" name="description" placeholder="Description">
+    <!-- Tags (optional) -->
+    <input type="text" name="tags" placeholder="Tags">
+    <button type="submit">Create Deck</button>
 </form>
 
 <!-- Deck list -->

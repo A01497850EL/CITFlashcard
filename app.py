@@ -1,34 +1,48 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import random
-from init_db import init_db 
-
-app = Flask(__name__)
+from init_db import init_db, Deck
 init_db()
+app = Flask(__name__)
 
 def get_db():
     conn = sqlite3.connect("flashcards.db")
     conn.row_factory = sqlite3.Row
     return conn
 
-
-
-#creating decks 
+# -----------------------------
+# HOME PAGE (REQUIRED)
+# -----------------------------
 @app.route("/")
 def index():
-    db = get_db()
-    decks = db.execute("SELECT * FROM decks ORDER BY created_at DESC").fetchall()
-    db.close()
+    """
+    Displays homepage with all decks
+    """
+    decks = Deck.select()
     return render_template("index.html", decks=decks)
 
-
+# Edited by bareera
+# creating decks 
 @app.route("/deck/create", methods=["POST"])
 def create_deck():
+    """
+    Creates a new flashcard deck using Peewee ORM
+    """
+    # Get the deck name from the HTML form
     name = request.form["name"]
-    db = get_db()
-    db.execute("INSERT INTO decks (name) VALUES (?)", (name,))
-    db.commit()
-    db.close()
+    description = request.form.get("description", "")
+    tags = request.form.get("tags", "")
+    # Basic validation: making sure name is not empty
+    if not name:
+        return "Deck name is required", 400
+    # Create a new deck in the database
+    # Peewee automatically inserts it into the "decks" table
+    Deck.create(
+        name=name,
+        description=description,
+        tags=tags
+    )
+    # Redirect user back to homepage after creating deck
     return redirect(url_for("index"))
 
 #creating cards 
