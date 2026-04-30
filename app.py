@@ -1,14 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+from init_db import init_db, db, Deck, Card
 import random
 from init_db import init_db, Deck
 init_db()
 app = Flask(__name__)
 
-def get_db():
-    conn = sqlite3.connect("flashcards.db")
-    conn.row_factory = sqlite3.Row
-    return conn
 
 # -----------------------------
 # HOME PAGE (REQUIRED)
@@ -54,16 +50,12 @@ def view_deck(deck_id):
     db.close()
     return render_template("deck.html", deck=deck, cards=cards)
 
-@app.route("/deck/<int:deck_id>/card/create", methods=["POST"])
+@app.route("/decks/<int:deck_id>/card/create", methods=["POST"])
 def create_card(deck_id):
     front = request.form["front"]
-    back = request.form["back"]
-    db = get_db()
-    db.execute(
-        "INSERT INTO cards (deck_id, front, back) VALUES (?, ?, ?)",
-        (deck_id, front, back)
-    )
+    back  = request.form["back"]
+    Card.create(deck=deck_id, front=front, back=back)
+    return redirect(url_for("view_deck", id=deck_id))
 
-    db.commit()
-    db.close()
-    return redirect(url_for("view_deck", deck_id=deck_id))
+if __name__ == "__main__":
+    app.run(debug=True)
