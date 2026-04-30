@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from init_db import init_db, db, Deck, Card
 import random
-from init_db import init_db, Deck
 init_db()
 app = Flask(__name__)
-
 
 # -----------------------------
 # HOME PAGE 
