@@ -35,5 +35,21 @@ def create_card(deck_id):
     Card.create(deck=deck_id, front=front, back=back)
     return redirect(url_for("view_deck", id=deck_id))
 
+# DELETE DECK
+@app.route("/decks/<int:deck_id>/delete", methods=["POST"])
+def delete_deck(deck_id):
+    """
+    Deletes a flashcard deck using Peewee ORM
+    """
+    try:
+        # Get the deck
+        deck = Deck.get_by_id(deck_id)
+        # Delete deck + related cards
+        deck.delete_instance(recursive=True)
+    except Deck.DoesNotExist:
+        return "Deck not found", 404
+    # Redirect back to decks page
+    return redirect(url_for("show_decks"))
+
 if __name__ == "__main__":
     app.run(debug=True)
