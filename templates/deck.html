@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/">← Back</a>
+<h1>{{ deck.name }}</h1>
+
+<!-- Create card form -->
+<form action="/deck/{{ deck.id }}/card/create" method="POST">
+    <input type="text" name="front" placeholder="Front (question)" required>
+    <input type="text" name="back" placeholder="Back (answer)" required>
+    <button type="submit">+ Add Card</button>
+</form>
+
+<!-- Card list -->
+{% for card in cards %}
+    <div class="card">
+        <p><strong>Q:</strong> {{ card.front }}</p>
+        <p><strong>A:</strong> {{ card.back }}</p>
+    </div>
+{% else %}
+    <p>No cards yet — add one above.</p>
+{% endfor %}
+
+{% endblock %}
