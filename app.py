@@ -35,5 +35,18 @@ def create_card(deck_id):
     Card.create(deck=deck_id, front=front, back=back)
     return redirect(url_for("view_deck", id=deck_id))
 
+@app.route("/decks/<int:deck_id>/card/<int:card_id>", methods=["DELETE"])
+def delete_card(deck_id, card_id):
+    deck = Deck.get_or_none(deck_id)
+    if not deck:
+        return {"error": "enter a valid deck_id"}, 404
+    
+    card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
+    if not card: 
+        return {"error": "enter a valid deck_id"}, 404
+        
+    card.delete_instance()
+    return {"message": f"Card {card_id} successfully deleted from deck {deck_id}"}, 200
+
 if __name__ == "__main__":
     app.run(debug=True)
