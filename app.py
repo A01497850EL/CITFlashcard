@@ -59,8 +59,8 @@ def view_deck(deck_id):
         deck = Deck.get_by_id(deck_id)
     except Deck.DoesNotExist:
         abort(404)
-    cards = deck.cards
-    return render_template("decks.html", deck=deck, card=cards)
+    cards = Card.select().where(Card.deck == deck_id)
+    return render_template("decks.html", deck=deck, cards=cards)
 
 @app.route("/decks/<int:deck_id>/card/create", methods=["POST"])
 def create_card(deck_id):
