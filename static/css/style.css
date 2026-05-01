@@ -1,3 +1,8 @@
+/* Global Styles */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
 /* Footer Wrapper */
 .site-footer {
   background-color: #ffffff;
@@ -46,4 +51,62 @@
 /* Darkens the link text when hovered */
 .footer-column a:hover {
   color: #000000;
+}
+
+
+/* Nav bar for all pages*/
+
+.navbar {
+  position: sticky; /*sticks to top then disappears*/
+  top: 0;
+  z-index: 1000;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 40px;
+  padding: 10px 24px 10px 0px;
+  background: white;
+  border-bottom: 1px solid black;
+  overflow: hidden;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+.nav-links a {
+  text-decoration: none; /* Removes default browser underline */
+  color: black;
+  font-size: larger;
+  font-weight: bold;
+  position: relative; /* Creates an anchor point for the animated line */
+}
+
+/* Builds the invisible line */
+.nav-links a::after {
+  content: '';  /* This creates a pseudo-element */
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px; /* Positions the line just below the text */
+  left: 0;
+  background-color: black;
+  transition: width 0.3s ease-in-out; /* Controls the speed of the animation */
+}
+
+/* Triggers the line to grow on hover */
+.nav-links a:hover::after {
+  width: 100%; /* Goes from 0 width to 100 in 0.3s */
+}
+
+/* Hides the default underline */
+.nav-links a:hover {
+  text-decoration: none; 
+}
+
+.logo img {
+  height: 120px;
+  width: auto;
+  mix-blend-mode: multiply;
 }
