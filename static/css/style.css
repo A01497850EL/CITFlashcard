@@ -1,0 +1,49 @@
+/* Footer Wrapper */
+.site-footer {
+  background-color: #ffffff;
+  padding: 20px 40px;
+  border-top: 1px solid black; /* Light line at the top */
+  border-bottom: 1px solid black; /* Thick dark bar at the bottom */
+}
+
+/* Main Container - Centers everything and uses gap for spacing */
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center; /* Centers the columns in the middle of the screen */
+  gap: 120px; /* Adjust this number to add more or less space between columns */
+}
+
+/* Styling for the Headers */
+.footer-column h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+/* Removes default bullet points from the lists */
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Spacing between the links */
+.footer-column li {
+  margin-bottom: 12px;
+}
+
+/* Styling the links */
+.footer-column a {
+  text-decoration: none;
+  color: #666666;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+/* Darkens the link text when hovered */
+.footer-column a:hover {
+  color: #000000;
+}
