@@ -37,7 +37,7 @@ def create_card(deck_id):
 
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
 def delete_card(deck_id, card_id):
-    deck = Deck.get_or_none(deck_id)
+    deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
         return redirect(url_for("view_deck", id=deck_id))
