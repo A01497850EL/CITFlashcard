@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from init_db import init_db, db, Deck, Card
 import random
 
@@ -34,6 +34,23 @@ def create_card(deck_id):
     back  = request.form["back"]
     Card.create(deck=deck_id, front=front, back=back)
     return redirect(url_for("view_deck", id=deck_id))
+
+# DELETE DECK
+@app.route("/decks/<int:deck_id>/delete", methods=["POST"])
+def delete_deck(deck_id):
+    """
+    Deletes a flashcard deck using Peewee ORM
+    """
+    try:
+        # Get the deck
+        deck = Deck.get_by_id(deck_id)
+        # Delete deck + related cards
+        deck.delete_instance(recursive=True)
+        flash("Deck deleted successfully.")
+    except Deck.DoesNotExist:
+        flash(f"Error: Could not locate deck with id {deck_id}")
+    # Redirect back to decks page
+    return redirect(url_for("show_decks"))
 
 if __name__ == "__main__":
     app.run(debug=True)
