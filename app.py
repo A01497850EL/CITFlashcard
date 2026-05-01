@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from init_db import init_db, db, Deck, Card
 import random
 
@@ -35,18 +35,21 @@ def create_card(deck_id):
     Card.create(deck=deck_id, front=front, back=back)
     return redirect(url_for("view_deck", id=deck_id))
 
-@app.route("/decks/<int:deck_id>/card/<int:card_id>", methods=["DELETE"])
+@app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
 def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(deck_id)
     if not deck:
-        return {"error": "enter a valid deck_id"}, 404
+        flash(f"Error: Could not locate deck with provided deck id {deck_id}")
+        return redirect(url_for("view_deck", id=deck_id))
     
     card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
     if not card: 
-        return {"error": "enter a valid deck_id"}, 404
+        flash(f"Error: Could not locate flashcard with provided card id {card_id}")
+        return redirect(url_for("view_deck", id=deck_id))
         
     card.delete_instance()
-    return {"message": f"Card {card_id} successfully deleted from deck {deck_id}"}, 200
+    flash(f"Card {card_id} deleted successsfully.")
+    return redirect(url_for("view_deck", id=deck_id))
 
 if __name__ == "__main__":
     app.run(debug=True)
