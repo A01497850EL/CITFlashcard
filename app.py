@@ -64,5 +64,22 @@ def delete_deck(deck_id):
         abort(404)
     return redirect(url_for("show_decks"))
 
+# DELETE DECK
+@app.route("/decks/<int:deck_id>/delete", methods=["POST"])
+def delete_deck(deck_id):
+    """
+    Deletes a flashcard deck using Peewee ORM
+    """
+    try:
+        # Get the deck
+        deck = Deck.get_by_id(deck_id)
+        # Delete deck + related cards
+        deck.delete_instance(recursive=True)
+        flash("Deck deleted successfully.")
+    except Deck.DoesNotExist:
+        flash(f"Error: Could not locate deck with id {deck_id}")
+    # Redirect back to decks page
+    return redirect(url_for("show_decks"))
+
 if __name__ == "__main__":
     app.run(debug=False)
