@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, flash
 from init_db import init_db, db, Deck, Card
 import os
 
@@ -53,16 +53,6 @@ def create_card(deck_id):
     back = request.form["back"]
     Card.create(deck=deck_id, front=front, back=back)
     return redirect(url_for("view_deck", deck_id=deck_id))
-
-# deleting a deck
-@app.route("/decks/<int:deck_id>/delete", methods=["POST"])
-def delete_deck(deck_id):
-    try:
-        deck = Deck.get_by_id(deck_id)
-        deck.delete_instance(recursive=True)
-    except Deck.DoesNotExist:
-        abort(404)
-    return redirect(url_for("show_decks"))
 
 # DELETE DECK
 @app.route("/decks/<int:deck_id>/delete", methods=["POST"])
