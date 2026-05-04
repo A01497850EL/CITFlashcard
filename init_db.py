@@ -15,7 +15,7 @@ class Card(BaseModel):
     front = CharField()
     back = CharField()
     mastered = BooleanField(default=False)
-
+    confidence_score = IntegerField(default=0)
 def init_db():
     db.connect()
     db.create_tables([Deck, Card], safe=True)
