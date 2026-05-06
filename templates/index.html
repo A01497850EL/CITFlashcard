@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- <h1>Your Decks</h1> -->
 
+<!-- Hero section -->
 <section class="hero-section">
     <h1>Flashy</h1>
     <p>Create and Study Your Flashcards</p>
@@ -13,6 +13,7 @@
     </div>
 </section> 
 
+<!-- Recent Deck list -->
 <section class="recent-decks">
     <h2>Recent Decks</h2>
     <div class="deck-grid">
@@ -26,25 +27,4 @@
         {% endfor %}
     </div>
 </section>
-
-
-<!-- Create deck form -->
-
-<!-- <form action="/deck/create" method="POST">
-    <input type="text" name="name" placeholder="Deck name" required>
-    <button type="submit">+ New Deck</button>
-</form> -->
-
-<!-- Deck list -->
-
-<!-- {% for deck in decks %}
-    <a href="/deck/{{ deck.id }}">
-        <div class="deck-card">
-            <h2>{{ deck.name }}</h2>
-        </div>
-    </a>
-{% else %}
-    <p>No decks yet — create one above.</p>
-{% endfor %} -->
-
 {% endblock %}
