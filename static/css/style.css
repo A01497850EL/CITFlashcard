@@ -45,4 +45,18 @@
     padding: 50px;
 }
 
+/* Recent Decks */
+.deck-grid {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
 
+.deck-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 40px;
+    width: 250px;
+    text-align: left;
+}

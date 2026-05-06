@@ -11,8 +11,21 @@
         <a href="{{ url_for('create_deck') }}" class="btn-create">Create Deck</a>
         <a href="{{ url_for('show_decks') }}" class="btn-view">View Decks</a>
     </div>
-</section>
+</section> 
 
+<section class="recent-decks">
+    <h2>Recent Decks</h2>
+    <div class="deck-grid">
+        {% for deck in decks %}
+        <div class="deck-card">
+            <h3>{{ deck.name }}</h3>
+            <a href="{{ url_for('view_deck', deck_id=deck.id) }}" class="btn-secondary">Open</a>
+        </div>
+        {% else %}
+        <p>No decks yet — create one above.</p>
+        {% endfor %}
+    </div>
+</section>
 
 
 <!-- Create deck form -->
