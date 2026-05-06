@@ -8,8 +8,8 @@
     <p>Create and Study Your Flashcards</p>
     
     <div class="hero-buttons">
-        <a href="/decks/create" class="btn-create">Create Deck</a>
-        <a href="/decks" class="btn-view">View Decks</a>
+        <a href="{{ url_for('create_deck') }}" class="btn-create">Create Deck</a>
+        <a href="{{ url_for('show_decks') }}" class="btn-view">View Decks</a>
     </div>
 </section>
 
