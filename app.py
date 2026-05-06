@@ -61,7 +61,7 @@ def flip_mode(deck_id):
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
         return redirect(url_for("decks"))
     
-    cards = Card.select().where(Card.deck == deck)
+    cards = Card.select().where(Card.deck == deck).order_by(Card.id)
     cards_list = list(cards)
     if not cards_list:
         # If no cards exist in deck
@@ -95,18 +95,15 @@ def flip_answer(card_id):
 
     elif result == "no":
         card.confidence_score = max(0, card.confidence_score - 1)
-        card.mastered = False
-
+        if card.confidence_score < 3:
+            card.mastered = False
     else:
         # Invalid input safety check
         flash("Invalid response received.")
         return redirect(url_for("flip_mode", deck_id=card.deck.id))
     # Save updated values to database
     card.save()
-    # Get current index from form
-    current_index = request.form.get("index", 0, type=int)
-    # Move to next card
-    next_index = current_index + 1
+    next_index = request.form.get("index", 0, type=int) + 1
     # Redirect to next card
     return redirect(url_for("flip_mode", deck_id=card.deck.id, index=next_index))
 
