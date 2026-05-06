@@ -7,28 +7,32 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-class DeckTag(BaseModel):
+class Tag(BaseModel):
     name = CharField()
 
 class Deck(BaseModel):
     name = CharField()
     description = CharField(null=True)
-    tags = ForeignKeyField(DeckTag, backref="decks", on_delete="CASCADE")
     created_at = DateTimeField(default=datetime.now)
 
-class CardTag(BaseModel):
-    name = CharField()
+class DeckTagJunction(BaseModel):
+    decks = ForeignKeyField(Deck, backref='tags', on_delete='CASCADE')
+    tags = ForeignKeyField(Tag, backref='decks', on_delete='CASCADE')
 
 class Card(BaseModel):
     deck = ForeignKeyField(Deck, backref="cards", on_delete="CASCADE")
-    tag = ForeignKeyField(CardTag, backref="cards", on_delete="CASCADE")
     front = CharField()
     back = CharField()
     mastered = BooleanField(default=False)
 
+class CardTagJunction(BaseModel):
+    cards = ForeignKeyField(Card, backref='card_link', on_delete='CASCADE')
+    tags = ForeignKeyField(Tag, backref='decks', on_delete='CASCADE')
+
+
 def init_db():
     with db:
-        db.create_tables([Deck, Card], safe=True)
+        db.create_tables([Deck, Card, Tag, DeckTagJunction, CardTagJunction], safe=True)
 
 if __name__ == "__main__":
     init_db()
