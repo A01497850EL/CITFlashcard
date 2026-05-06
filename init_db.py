@@ -1,4 +1,5 @@
 from peewee import *
+from datetime import datetime
 
 db = SqliteDatabase("flashcards.db")
 
@@ -8,7 +9,9 @@ class BaseModel(Model):
 
 class Deck(BaseModel):
     name = CharField()
-    created_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+    description = CharField(null=True)
+    tags = CharField(null=True)
+    created_at = DateTimeField(default=datetime.now)
 
 class Card(BaseModel):
     deck = ForeignKeyField(Deck, backref="cards", on_delete="CASCADE")
@@ -17,10 +20,8 @@ class Card(BaseModel):
     mastered = BooleanField(default=False)
 
 def init_db():
-    db.connect()
-    db.create_tables([Deck, Card], safe=True)
-    db.close()
-    print("Database initialized.")
+    with db:
+        db.create_tables([Deck, Card], safe=True)
 
 if __name__ == "__main__":
     init_db()

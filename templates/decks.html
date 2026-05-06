@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if deck %}
+    <!-- INDIVIDUAL DECK VIEW -->
+    <a href="{{ url_for('show_decks') }}">← Back</a>
+    <h1>{{ deck.name }}</h1>
+
+    <form action="{{ url_for('create_card', deck_id=deck.id) }}" method="POST">
+        <input type="text" name="front" placeholder="Front (question)" required>
+        <input type="text" name="back" placeholder="Back (answer)" required>
+        <button type="submit">+ Add Card</button>
+    </form>
+
+    {% for card in cards %}
+        <div class="card">
+            <p><strong>Q:</strong> {{ card.front }}</p>
+            <p><strong>A:</strong> {{ card.back }}</p>
+        </div>
+    {% else %}
+        <p>No cards yet — add one above.</p>
+    {% endfor %}
+
+{% else %}
+    <!-- DECK LIST VIEW -->
+    <a href="{{ url_for('index') }}">← Back to Home</a>
+    <h1>Your Decks</h1>
+
+    <form action="{{ url_for('create_deck') }}" method="POST">
+        <input type="text" name="name" placeholder="Deck Name" required>
+        <input type="text" name="description" placeholder="Description">
+        <input type="text" name="tags" placeholder="Tags">
+        <button type="submit">Create Deck</button>
+    </form>
+
+    <hr>
+
+    {% for deck in decks %}
+        <div>
+            <a href="{{ url_for('view_deck', deck_id=deck.id) }}">
+                <h3>{{ deck.name }}</h3>
+            </a>
+        </div>
+    {% else %}
+        <p>No decks yet — create one above.</p>
+    {% endfor %}
+
+{% endif %}
+
+{% endblock %}
