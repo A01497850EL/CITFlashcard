@@ -11,14 +11,14 @@
     <div class="hero">
       <header class="navbar">
         <div class="logo">
-          <a href="index.html">
+          <a href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='images/Flashy_Logo.png') }}" alt="Flashy Logo">
           </a>
         </div>
         <nav class="nav-links">
-          <a href="index.html">Home</a>
-          <a href="deck.html">Deck</a>
-          <a href="aboutus.html">About Us</a>
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('decks') }}">Decks</a>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
         </nav>
       </header>
 

@@ -110,3 +110,154 @@ body {
   width: auto;
   mix-blend-mode: multiply;
 }
+
+
+/* ABOUT US PAGE STYLES */
+.about-wrapper {
+  background-color: #fafafa; /* Very light, clean grey */
+  color: #111111;
+  font-family: system-ui, -apple-system, sans-serif;
+  padding: 60px 20px;
+  line-height: 1.6;
+}
+
+.about-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* --- HERO SECTION --- */
+.about-hero {
+  text-align: center;
+  padding: 40px 0 80px 0;
+}
+
+.about-badge {
+  display: inline-block;
+  background-color: #e6f0ff;
+  color: #0055ff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.about-title {
+  font-size: 56px;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  letter-spacing: -1px;
+}
+
+/* Makes the "lightning fast" text look cool with a simple gradient */
+.about-highlight {
+  background: linear-gradient(to right, #0055ff, #8800ff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.about-subtitle {
+  font-size: 20px;
+  color: #666666;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* --- MISSION SECTION --- */
+.about-mission {
+  background-color: #111111; /* Sleek dark box */
+  color: white;
+  padding: 60px 40px;
+  border-radius: 24px;
+  text-align: center;
+  margin-bottom: 80px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.about-mission h2 {
+  font-size: 32px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.about-mission p {
+  font-size: 22px;
+  color: #cccccc;
+  font-style: italic;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* --- VALUES SECTION --- */
+.about-values-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.about-values-header h2 {
+  font-size: 36px;
+  margin: 0 0 10px 0;
+}
+
+.about-values-header p {
+  color: #666666;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* The 2x2 Grid Layout */
+.about-values-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Forces exactly 2 columns */
+  gap: 30px; /* Space between the cards */
+}
+
+/* Mobile responsiveness: stack to 1 column on small screens */
+@media (max-width: 768px) {
+  .about-values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual Card Style */
+.about-value-card {
+  background-color: white;
+  border: 1px solid #eaeaea;
+  border-radius: 20px;
+  padding: 40px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect to make cards pop up slightly */
+.about-value-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Circle container for the emojis */
+.about-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.about-value-card h3 {
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #111111;
+}
+
+.about-value-card p {
+  color: #666666;
+  margin: 0;
+}
+
+/* End of About Us Page Styles */

@@ -37,3 +37,7 @@ def create_card(deck_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/aboutus")
+def aboutus():
+    return render_template("aboutus.html")
