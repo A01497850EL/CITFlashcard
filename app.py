@@ -87,5 +87,66 @@ def delete_card(deck_id, card_id):
     flash(f"Card {card_id} deleted successsfully.")
     return redirect(url_for("view_deck", id=deck_id))
 
+# flashcard write mode
+@app.route("/decks/<int:deck_id>/write")
+def write_mode(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        # If deck does not exist, show error and redirect
+        flash(f"Error: Could not locate deck with provided deck id {deck_id}")
+        return redirect(url_for("decks"))
+    # Get all cards in sequential order
+    cards = Card.select().where(Card.deck == deck).order_by(Card.id)
+    cards_list = list(cards)
+    if not cards_list:
+        # If no cards exist in deck
+        flash("No cards available in this deck to study.")
+        return redirect(url_for("view_deck", id=deck_id))
+    # Get current index from URL (default = 0)
+    index = request.args.get("index", 0, type=int)
+    # If user completed all flashcards
+    if index >= len(cards_list):
+        flash("You have completed all flashcards in this deck!")
+        return redirect(url_for("view_deck", id=deck_id))
+    # Get current card
+    card = cards_list[index]
+    # Send card + index to frontend
+    return render_template("write.html", deck=deck, card=card, index=index)
+
+
+# Handle write mode answer
+@app.route("/cards/<int:card_id>/write-answer", methods=["POST"])
+def write_answer(card_id):
+    card = Card.get_or_none(Card.id == card_id)
+    if not card:
+        # If card not found
+        flash(f"Error: Could not locate flashcard with provided card id {card_id}")
+        return redirect(url_for("decks"))
+    # Get user's typed answer
+    user_answer = request.form.get("answer", "").strip().lower()
+    # Get correct flashcard answer
+    correct_answer = card.back.strip().lower()
+    # Check if user's answer matches the definition
+    is_correct = user_answer == correct_answer
+    # Allow user to override incorrect judgement
+    override = request.form.get("override")
+
+
+    if is_correct or override == "true":
+        # Increase confidence score
+        card.confidence_score += 1
+        # Mark as mastered if confidence score reaches 3
+        if card.confidence_score >= 3:
+            card.mastered = True
+    else:
+        # Decrease confidence score but never below 0
+        card.confidence_score = max(0, card.confidence_score - 1)
+        # Remove mastered status if confidence score drops below 3
+        if card.confidence_score < 3:
+            card.mastered = False
+    card.save()
+    next_index = request.form.get("index", 0, type=int) + 1
+    return redirect(url_for("write_mode", deck_id=card.deck.id, index=next_index))
+
 if __name__ == "__main__":
     app.run(debug=False)
