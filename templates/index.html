@@ -2,10 +2,45 @@
 
 {% block content %}
 
-<h1>Welcome to Flashy</h1>
+<!-- Hero section -->
+<section class="hero-section">
+    <h1>Flashy</h1>
+    <p>Create and Study Your Flashcards</p>
+    
+    <div class="hero-buttons">
+        <a href="{{ url_for('show_decks') }}#create-deck" class="btn-create">Create Deck</a>
+        <a href="{{ url_for('show_decks') }}" class="btn-view">View Decks</a>
+    </div>
+</section> 
 
-<p>Create and study flashcards easily.</p>
+<!-- Recent Deck list -->
+<section class="recent-decks">
+    <h2>Recent Decks</h2>
+    <div class="deck-grid">
+        {% for deck in decks %}
+            {% if loop.index <= 3 %}
+                <div class="deck-card">
+                    <div class="home-deck-content">
+                        <h3>{{ deck.name }}</h3>
+                        
+                        {% if deck.description %}
+                            <p class="home-deck-desc">{{ deck.description }}</p>
+                        {% endif %}
 
-<a href="{{ url_for('show_decks') }}">Go to your decks</a>
+                        <div class="home-deck-tags">
+                            {% for junction in deck.tags %}
+                                <span class="home-tag-badge">{{ junction.tags.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <a href="{{ url_for('view_deck', deck_id=deck.id) }}" class="btn-secondary">Open</a>
+                </div>
+            {% endif %}
+        {% else %}
+            <p>No decks yet — create one above.</p>
+        {% endfor %}
+    </div>
+</section>
 
 {% endblock %}
