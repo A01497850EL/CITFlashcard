@@ -91,8 +91,7 @@ def delete_card(deck_id, card_id):
 if __name__ == "__main__":
     app.run(debug=False)
 
-#STUDY DECK 
-
+# STUDY MODE (FSRS)
 @app.route("/decks/<int:deck_id>/study")
 def study_deck(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
@@ -106,7 +105,6 @@ def study_deck(deck_id):
     show_answer = request.args.get("show_answer")
     return render_template("study.html", deck=deck, card=card, show_answer=show_answer)
 
-#REVIEW CARD
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/review", methods=["POST"])
 def review_card(deck_id, card_id):
     rating_map = {"again": Rating.Again, "hard": Rating.Hard,
@@ -141,5 +139,141 @@ def review_card(deck_id, card_id):
 
     return redirect(url_for("study_deck", deck_id=deck_id))
 
+# WRITE MODE
+@app.route("/decks/<int:deck_id>/write")
+def write_mode(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        flash(f"Error: Could not locate deck with provided deck id {deck_id}")
+        return redirect(url_for("show_decks"))
+    cards = Card.select().where(Card.deck == deck).order_by(Card.id)
+    cards_list = list(cards)
+    if not cards_list:
+        flash("No cards available in this deck to study.")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    index = request.args.get("index", 0, type=int)
+    if index >= len(cards_list):
+        flash("You have completed all flashcards in this deck!")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    card = cards_list[index]
+    return render_template("write.html", deck=deck, card=card, index=index)
+
+@app.route("/cards/<int:card_id>/write-answer", methods=["POST"])
+def write_answer(card_id):
+    card = Card.get_or_none(Card.id == card_id)
+    if not card:
+        flash(f"Error: Could not locate flashcard with provided card id {card_id}")
+        return redirect(url_for("show_decks"))
+
+    user_answer = request.form.get("answer", "").strip().lower()
+    correct_answer = card.back.strip().lower()
+    is_correct = user_answer == correct_answer
+    override = request.form.get("override")
+
+    if is_correct:
+        rating = Rating.Good
+    elif override == "true":
+        rating = Rating.Hard
+    else:
+        rating = Rating.Again
+
+    if is_correct or override == "true":
+        card.confidence_score += 1
+        if card.confidence_score >= 3:
+            card.mastered = True
+    else:
+        card.confidence_score = max(0, card.confidence_score - 1)
+        if card.confidence_score < 3:
+            card.mastered = False
+
+    fsrs_card = FSRSCard()
+    fsrs_card.stability  = card.stability
+    fsrs_card.difficulty = card.difficulty
+    fsrs_card.due = card.due.replace(tzinfo=timezone.utc) if card.due else datetime.now(timezone.utc)
+    fsrs_card.state = State(card.state)
+    fsrs_card.reps = card.reps
+    fsrs_card.lapses = card.lapses
+
+    scheduling_cards = scheduler.repeat(fsrs_card, datetime.now(timezone.utc))
+    updated = scheduling_cards[rating].card
+
+    card.stability = updated.stability
+    card.difficulty  = updated.difficulty
+    card.due = updated.due
+    card.state = updated.state.value
+    card.last_review = datetime.now(timezone.utc)
+    card.reps = updated.reps
+    card.lapses = updated.lapses
+
+    card.save()
+    next_index = request.form.get("index", 0, type=int) + 1
+    return redirect(url_for("write_mode", deck_id=card.deck.id, index=next_index))
+
+# FLIP MODE
+@app.route("/decks/<int:deck_id>/flip")
+def flip_mode(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        flash(f"Error: Could not locate deck with provided deck id {deck_id}")
+        return redirect(url_for("show_decks"))
+    cards = Card.select().where(Card.deck == deck).order_by(Card.id)
+    cards_list = list(cards)
+    if not cards_list:
+        flash("No cards available in this deck to study.")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    index = request.args.get("index", 0, type=int)
+    if index >= len(cards_list):
+        flash("You have completed all flashcards in this deck!")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    card = cards_list[index]
+    return render_template("flip.html", deck=deck, card=card, index=index)
+
+@app.route("/cards/<int:card_id>/flip-answer", methods=["POST"])
+def flip_answer(card_id):
+    card = Card.get_or_none(Card.id == card_id)
+    if not card:
+        flash(f"Error: Could not locate flashcard with provided card id {card_id}")
+        return redirect(url_for("show_decks"))
+
+    result = request.form.get("result")
+
+    if result == "yes":
+        rating = Rating.Good
+        card.confidence_score += 1
+        if card.confidence_score >= 3:
+            card.mastered = True
+    elif result == "no":
+        rating = Rating.Again
+        card.confidence_score = max(0, card.confidence_score - 1)
+        if card.confidence_score < 3:
+            card.mastered = False
+    else:
+        flash("Invalid response received.")
+        return redirect(url_for("flip_mode", deck_id=card.deck.id))
+
+    fsrs_card = FSRSCard()
+    fsrs_card.stability  = card.stability
+    fsrs_card.difficulty = card.difficulty
+    fsrs_card.due = card.due.replace(tzinfo=timezone.utc) if card.due else datetime.now(timezone.utc)
+    fsrs_card.state = State(card.state)
+    fsrs_card.reps = card.reps
+    fsrs_card.lapses = card.lapses
+
+    scheduling_cards = scheduler.repeat(fsrs_card, datetime.now(timezone.utc))
+    updated = scheduling_cards[rating].card
+
+    card.stability = updated.stability
+    card.difficulty  = updated.difficulty
+    card.due = updated.due
+    card.state = updated.state.value
+    card.last_review = datetime.now(timezone.utc)
+    card.reps = updated.reps
+    card.lapses = updated.lapses
+
+    card.save()
+    next_index = request.form.get("index", 0, type=int) + 1
+    return redirect(url_for("flip_mode", deck_id=card.deck.id, index=next_index))
+
 if __name__ == "__main__":
     app.run(debug=False)
+    
