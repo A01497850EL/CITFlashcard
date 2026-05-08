@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
-from init_db import init_db, db, Deck, Card
+from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
 import os
 
 app = Flask(__name__)
@@ -34,7 +34,12 @@ def create_deck():
     tags = request.form.get("tags", "")
     if not name:
         return "Deck name is required", 400
-    Deck.create(name=name, description=description, tags=tags)
+    deck=Deck.create(name=name, description=description)
+    for tag_name in tags.split(","):
+        tag_name = tag_name.strip()
+        if tag_name:
+            tag, created = Tag.get_or_create(name=tag_name)
+            DeckTagJunction.create(decks=deck, tags=tag)
     return redirect(url_for("show_decks"))
 
 # viewing a deck
@@ -92,7 +97,6 @@ def delete_card(deck_id, card_id):
 @app.route("/aboutus")
 def aboutus():
     return render_template("aboutus.html")
-    app.run(debug=False)
 
 if __name__ == "__main__":
     app.run(debug=True)
