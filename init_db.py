@@ -24,6 +24,7 @@ class Card(BaseModel):
     front = CharField()
     back = CharField()
     mastered = BooleanField(default=False)
+    confidence_score = IntegerField(default=0)
 
 class CardTagJunction(BaseModel):
     cards = ForeignKeyField(Card, backref='card_link', on_delete='CASCADE')
