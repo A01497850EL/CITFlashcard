@@ -18,13 +18,29 @@
     <h2>Recent Decks</h2>
     <div class="deck-grid">
         {% for deck in decks %}
-        <div class="deck-card">
-            <h3>{{ deck.name }}</h3>
-            <a href="{{ url_for('view_deck', deck_id=deck.id) }}" class="btn-secondary">Open</a>
-        </div>
+            {% if loop.index <= 3 %}
+                <div class="deck-card">
+                    <div class="home-deck-content">
+                        <h3>{{ deck.name }}</h3>
+                        
+                        {% if deck.description %}
+                            <p class="home-deck-desc">{{ deck.description }}</p>
+                        {% endif %}
+
+                        <div class="home-deck-tags">
+                            {% for junction in deck.tags %}
+                                <span class="home-tag-badge">{{ junction.tags.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <a href="{{ url_for('view_deck', deck_id=deck.id) }}" class="btn-secondary">Open</a>
+                </div>
+            {% endif %}
         {% else %}
-        <p>No decks yet — create one above.</p>
+            <p>No decks yet — create one above.</p>
         {% endfor %}
     </div>
 </section>
+
 {% endblock %}
