@@ -18,6 +18,7 @@ def teardown_request(exc):
 
 @app.route("/")
 def index():
+    decks = Deck.select()
     return render_template("index.html")
 
 @app.route("/decks")
