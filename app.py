@@ -59,20 +59,20 @@ def flip_mode(deck_id):
     if not deck:
         # If deck does not exist, show error and redirect
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
-        return redirect(url_for("decks"))
+        return redirect(url_for("show_decks"))
     
     cards = Card.select().where(Card.deck == deck).order_by(Card.id)
     cards_list = list(cards)
     if not cards_list:
         # If no cards exist in deck
         flash("No cards available in this deck to study.")
-        return redirect(url_for("view_deck", id=deck_id))
+        return redirect(url_for("view_deck", deck_id=deck_id))
     # Get current index from URL (default = 0)
     index = request.args.get("index", 0, type=int)
     # If user reached end of deck
     if index >= len(cards_list):
         flash("You have completed all flashcards in this deck!")
-        return redirect(url_for("view_deck", id=deck_id))
+        return redirect(url_for("view_deck", deck_id=deck_id))
     # Get card in order
     card = cards_list[index]
     # Send card + index to frontend
@@ -85,7 +85,7 @@ def flip_answer(card_id):
     if not card:
         # If card not found
         flash(f"Error: Could not locate flashcard with provided card id {card_id}")
-        return redirect(url_for("decks"))
+        return redirect(url_for("show_decks"))
     # Get result from form 
     result = request.form.get("result")
     if result == "yes":
