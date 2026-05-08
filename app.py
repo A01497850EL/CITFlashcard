@@ -70,7 +70,7 @@ def delete_deck(deck_id):
         flash(f"Error: Could not locate deck with id {deck_id}")
     # Redirect back to decks page
     return redirect(url_for("show_decks"))
-
+    
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
 def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
@@ -87,5 +87,11 @@ def delete_card(deck_id, card_id):
     flash(f"Card {card_id} deleted successsfully.")
     return redirect(url_for("view_deck", id=deck_id))
 
-if __name__ == "__main__":
+# Route to About Us page
+@app.route("/aboutus")
+def aboutus():
+    return render_template("aboutus.html")
     app.run(debug=False)
+
+if __name__ == "__main__":
+    app.run(debug=True)
