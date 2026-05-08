@@ -76,16 +76,16 @@ def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
-        return redirect(url_for("view_deck", id=deck_id))
+        return redirect(url_for("view_deck", deck_id=deck_id))
     
     card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
     if not card: 
         flash(f"Error: Could not locate flashcard with provided card id {card_id}")
-        return redirect(url_for("view_deck", id=deck_id))
+        return redirect(url_for("view_deck", deck_id=deck_id))
         
     card.delete_instance()
     flash(f"Card {card_id} deleted successsfully.")
-    return redirect(url_for("view_deck", id=deck_id))
+    return redirect(url_for("view_deck", deck_id=deck_id))
 
 if __name__ == "__main__":
     app.run(debug=False)
