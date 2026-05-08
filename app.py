@@ -71,10 +71,10 @@ def delete_deck(deck_id):
     # Redirect back to decks page
     return redirect(url_for("show_decks"))
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
 @app.route("/aboutus")
 def aboutus():
     return render_template("aboutus.html")
     app.run(debug=False)
+    
+if __name__ == "__main__":
+    app.run(debug=True)
