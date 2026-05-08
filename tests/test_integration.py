@@ -19,7 +19,7 @@ class TestDecks:
         response = test_client.get("/decks")
         
         assert response.status_code == 200
-        assert b"Biology" in response.data  # From your seeded_data fixture
+        assert b"Biology" in response.data  
 
     def test_view_single_deck(self, test_client, seeded_data):
         """Testing Getting Singular Deck."""
