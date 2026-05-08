@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
 from init_db import init_db, db, Deck, Card
+from fsrs import FSRS, Card as FSRSCard, Rating, State
 import os
 
 app = Flask(__name__)
@@ -86,6 +87,59 @@ def delete_card(deck_id, card_id):
     card.delete_instance()
     flash(f"Card {card_id} deleted successsfully.")
     return redirect(url_for("view_deck", id=deck_id))
+
+if __name__ == "__main__":
+    app.run(debug=False)
+
+#STUDY DECK 
+
+@app.route("/decks/<int:deck_id>/study")
+def study_deck(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        abort(404)
+    now = datetime.now(timezone.utc)
+    card = (Card.select()
+                .where((Card.deck == deck_id) & (Card.due <= now))
+                .order_by(Card.due)
+                .first())
+    show_answer = request.args.get("show_answer")
+    return render_template("study.html", deck=deck, card=card, show_answer=show_answer)
+
+#REVIEW CARD
+@app.route("/decks/<int:deck_id>/card/<int:card_id>/review", methods=["POST"])
+def review_card(deck_id, card_id):
+    rating_map = {"again": Rating.Again, "hard": Rating.Hard,
+                  "good": Rating.Good, "easy": Rating.Easy}
+    rating = rating_map.get(request.form["rating"])
+    if not rating:
+        abort(400)
+
+    card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
+    if not card:
+        abort(404)
+
+    fsrs_card = FSRSCard()
+    fsrs_card.stability  = card.stability
+    fsrs_card.difficulty = card.difficulty
+    fsrs_card.due = card.due.replace(tzinfo=timezone.utc) if card.due else datetime.now(timezone.utc)
+    fsrs_card.state = State(card.state)
+    fsrs_card.reps = card.reps
+    fsrs_card.lapses = card.lapses
+
+    scheduling_cards = scheduler.repeat(fsrs_card, datetime.now(timezone.utc))
+    updated = scheduling_cards[rating].card
+
+    card.stability = updated.stability
+    card.difficulty = updated.difficulty
+    card.due = updated.due
+    card.state = updated.state.value
+    card.last_review = datetime.now(timezone.utc)
+    card.reps = updated.reps
+    card.lapses = updated.lapses
+    card.save()
+
+    return redirect(url_for("study_deck", deck_id=deck_id))
 
 if __name__ == "__main__":
     app.run(debug=False)

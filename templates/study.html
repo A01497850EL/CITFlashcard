@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="{{ url_for('view_deck', deck_id=deck.id) }}">← Back to Deck</a>
+<h1>{{ deck.name }}</h1>
+
+{% if card %}
+    <div class="card">
+        <p><strong>Q:</strong> {{ card.front }}</p>
+
+        {% if show_answer %}
+            <p><strong>A:</strong> {{ card.back }}</p>
+            <form method="POST" action="{{ url_for('review_card', deck_id=deck.id, card_id=card.id) }}">
+                <button name="rating" value="again">Again</button>
+                <button name="rating" value="hard">Hard</button>
+                <button name="rating" value="good">Good</button>
+                <button name="rating" value="easy">Easy</button>
+            </form>
+        {% else %}
+            <a href="?show_answer=1">Show Answer</a>
+        {% endif %}
+    </div>
+{% else %}
+    <p>No cards due — come back later!</p>
+{% endif %}
+
+{% endblock %}

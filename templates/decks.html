@@ -5,6 +5,7 @@
 {% if deck %}
     <!-- INDIVIDUAL DECK VIEW -->
     <a href="{{ url_for('show_decks') }}">← Back</a>
+    <a href="{{ url_for('study_deck', deck_id=deck.id) }}">Study</a>
     <h1>{{ deck.name }}</h1>
 
     <form action="{{ url_for('create_card', deck_id=deck.id) }}" method="POST">
