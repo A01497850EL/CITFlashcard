@@ -39,6 +39,18 @@ class TestDecks:
         # Verify cards were deleted (Recursive delete)
         assert Card.select().where(Card.deck == deck.id).count() == 0
 
+    def test_update_deck(self, test_client, seeded_data):
+        """Testing Deck Update"""
+        deck, _ = seeded_data
+        response = test_client.post(f"/decks/{deck.id}/update", data={
+            "name": "English",
+            "description": "Shakespeare Review",
+            "tags": "arts"
+        }, follow_redirects=True)
+
+        assert response.status_code == 200
+        assert Deck.select().where(Deck.name == "English").exists()
+
 
 class TestCards:
     def test_create_card(self, test_client, seeded_data):
@@ -63,3 +75,14 @@ class TestCards:
         
         assert response.status_code == 200
         assert Card.get_or_none(Card.id == card.id) is None
+
+    def test_update_card(self, test_client, seeded_data):
+        """Testing Deck Update"""
+        deck, card = seeded_data
+        response = test_client.post(f"/decks/{deck.id}/card/{card.id}/update", data={
+            "front": "What is the Powerhouse of the cell?",
+            "back": "Mitocondria"
+        }, follow_redirects=True)
+
+        assert response.status_code == 200
+        assert Card.select().where(Card.front == "What is the Powerhouse of the cell?").exists()
