@@ -7,9 +7,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <nav>
-        <a href="/">Flashy</a>
-    </nav>
+    <!-- Nav Bar -->
+    <div class="hero">
+      <header class="navbar">
+        <div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/Flashy_Logo.png') }}" alt="Flashy Logo">
+          </a>
+        </div>
+        <nav class="nav-links">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('decks') }}">Decks</a>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
+        </nav>
+      </header>
 
     <main>
         {% block content %}{% endblock %}
@@ -18,3 +29,40 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-container">
+    
+    <!-- Column 1: Information -->
+    <div class="footer-column">
+      <h4>Information</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 2: Legal -->
+    <div class="footer-column">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Socials -->
+    <div class="footer-column">
+      <h4>Socials</h4>
+      <ul>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">X</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+
+  </div>
+</footer>
