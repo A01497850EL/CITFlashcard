@@ -1,0 +1,724 @@
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Hero Section */
+
+.hero-section {
+    background-image: url("../images/flashcard_background.png");
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero-section h1 {
+    font-size: 80px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.hero-section p {
+    font-size: 24px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+/* Buttons in the hero section of index*/
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn-create {
+    background-color: #E8E8E8;
+    padding: 15px 35px;
+    border: 1px solid #D0D0D0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: black;
+    /* Added transition for a smooth hover effect */
+    transition: all 0.3s ease; 
+}
+
+/* Hover state for Create Deck */
+.btn-create:hover {
+    background-color: #D8D8D8;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-view {
+    background-color: #2D2D2D;
+    color: white;
+    padding: 15px 35px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+    background-color: #111111;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* END OF HERO SECTION ON INDEX */
+
+/* RECENT DECKS SECTION */
+
+.recent-decks {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto; /* Centers the section on the page */
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.recent-decks h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #111111;
+    text-align: left; /* Changed from center to left */
+}
+
+/* Grid Layout for exactly 3 uniform columns */
+.deck-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 24px;
+}
+
+/* RECENT DECK CARD */
+.deck-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+    
+    /* Flexbox keeps the button at the bottom uniformly */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.deck-card h3 {
+    margin: 0 0 16px 0;
+    font-size: 20px;
+    color: #333333;
+    line-height: 1.3;
+}
+
+.deck-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: #111111;
+}
+
+/* OPEN BUTTON ON RECENT DECKS */
+.btn-secondary {
+    display: inline-block;
+    text-align: center;
+    background-color: #f1f1f1;
+    color: #111111;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+/* HOME RECENT DECKS - DESCRIPTIONS & TAGS */
+
+/* Groups the title, desc, and tags together */
+.home-deck-content {
+    margin-bottom: 20px;
+}
+
+/* Styles the description text */
+.home-deck-desc {
+    color: #666666;
+    font-size: 14px;
+    margin: 0 0 15px 0;
+    line-height: 1.5;
+
+    /* Truncates long descriptions to keep cards uniform */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Flexbox container to align the tag badges */
+.home-deck-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.home-tag-badge {
+    background-color: #e6f0ff;
+    color: #0055ff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: lowercase;
+    border: 1px solid #cce0ff;
+    display: inline-block;
+}
+
+/* END OF RECENT DECKS */
+
+/* Footer */
+
+.site-footer {
+  background-color: #ffffff;
+  padding: 20px 40px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+/* Main Container */
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 120px;
+}
+
+/* Styling for the Headers */
+.footer-column h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+/* Removes default bullet points from the lists */
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column li {
+  margin-bottom: 12px;
+}
+
+/* Styling the links */
+.footer-column a {
+  text-decoration: none;
+  color: #666666;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.footer-column a:hover {
+  color: #000000;
+}
+
+/* END OF FOOTER */
+
+/* Nav-Bar for all pages*/
+
+.navbar {
+  position: sticky; /* Sticks to top then disappears*/
+  top: 0;
+  z-index: 1000;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 40px;
+  padding: 10px 24px 10px 0px;
+  background: white;
+  border-bottom: 1px solid black;
+  overflow: hidden;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+.nav-links a {
+  text-decoration: none;
+  color: black;
+  font-size: larger;
+  font-weight: bold;
+  position: relative; /* Creates an anchor point for the animated line */
+}
+
+/* Builds the invisible line */
+.nav-links a::after {
+  content: '';  /* This creates a pseudo-element */
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: black;
+  transition: width 0.3s ease-in-out; /* Controls the speed of the animation */
+}
+
+/* Triggers the line to grow on hover */
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-links a:hover {
+  text-decoration: none; 
+}
+
+.logo img {
+  height: 120px;
+  width: auto;
+  mix-blend-mode: multiply;
+}
+
+/* END OF NAV BAR */
+
+/* ABOUT US PAGE */
+
+.about-wrapper {
+  background-color: #fafafa;
+  color: #111111;
+  font-family: system-ui, -apple-system, sans-serif;
+  padding: 60px 20px;
+  line-height: 1.6;
+}
+
+.about-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* HERO SECTION */
+.about-hero {
+  text-align: center;
+  padding: 40px 0 80px 0;
+}
+
+.about-badge {
+  display: inline-block;
+  background-color: #e6f0ff;
+  color: #0055ff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.about-title {
+  font-size: 56px;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  letter-spacing: -1px;
+}
+
+/* Makes the "lightning fast" text look cool with a simple gradient */
+.about-highlight {
+  background: linear-gradient(to right, #0055ff, #8800ff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.about-subtitle {
+  font-size: 20px;
+  color: #666666;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* MISSION SECTION */
+.about-mission {
+  background-color: #111111;
+  color: white;
+  padding: 60px 40px;
+  border-radius: 24px;
+  text-align: center;
+  margin-bottom: 80px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.about-mission h2 {
+  font-size: 32px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.about-mission p {
+  font-size: 22px;
+  color: #cccccc;
+  font-style: italic;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* VALUES SECTION */
+.about-values-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.about-values-header h2 {
+  font-size: 36px;
+  margin: 0 0 10px 0;
+}
+
+.about-values-header p {
+  color: #666666;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* The 2x2 Grid Layout */
+.about-values-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Forces exactly 2 columns */
+  gap: 30px;
+}
+
+
+/* Individual Card Style */
+.about-value-card {
+  background-color: white;
+  border: 1px solid #eaeaea;
+  border-radius: 20px;
+  padding: 40px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect to make cards pop up slightly */
+.about-value-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Circle container for the emojis */
+.about-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.about-value-card h3 {
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #111111;
+}
+
+.about-value-card p {
+  color: #666666;
+  margin: 0;
+}
+
+/* End of About Us Page */
+
+/* Decks Page */
+
+.flashy-wrapper {
+    max-width: 850px;
+    margin: 50px auto;
+    padding: 0 20px;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #111111;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+}
+
+/* Form Inputs */
+.form-group { margin-bottom: 24px; }
+
+.form-group label, .card-side label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.form-helper-text {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+}
+.card-side label {
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #111111;
+    box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+}
+
+.input-field::placeholder { color: #a0a0a0; }
+
+/* Button Styling for Decks Page */
+.btn-save {
+    background-color: #111111;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-save:hover { background-color: #333333; }
+
+.btn-delete {
+    background-color: #f1f1f1;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-delete:hover {
+    background-color: #ffe5e5;
+    color: #cc0000;
+}
+
+/* Card Containers for Decks Page */
+.card-block {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.card-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+.card-side { flex: 1; }
+
+.card-textarea {
+    background-color: #f9f9f9;
+    border: 1px solid transparent;
+    height: 100px;
+    resize: vertical;
+}
+.card-textarea:focus {
+    background-color: white;
+    border: 1px solid #111111;
+}
+
+/* Add Card Section */
+.add-card-section {
+    border: 2px dashed #cccccc;
+    border-radius: 16px;
+    padding: 30px;
+    margin-top: 40px;
+    background-color: #fafafa;
+    transition: border-color 0.3s ease;
+}
+.add-card-section:focus-within {
+    border-color: #111111;
+    background-color: white;
+}
+
+/* Grids & Layouts */
+.decks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 60px;
+}
+
+.deck-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.deck-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: #111111;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eaeaea;
+    margin: 60px 0;
+}
+
+.deck-nav-back {
+    color: #888;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.deck-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* Modifies the existing .page-title margin specifically for the single deck view */
+.page-title-sm {
+    margin-bottom: 10px;
+}
+
+.deck-desc-text {
+    color: #666;
+    font-size: 18px;
+}
+
+/* Modifies the existing .divider margin specifically for the single deck view */
+.divider-sm {
+    margin: 30px 0;
+}
+
+.deck-subheading {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.deck-empty-state {
+    color: #888;
+    font-style: italic;
+}
+
+.card-display-box {
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.add-card-header {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.hint-text-label {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+/* Modifies the existing .input-field specifically for the hint box */
+.input-hint-field {
+    background: #f9f9f9;
+    border-color: transparent;
+}
+
+.btn-align-right {
+    text-align: right;
+}
+
+.no-decks-created {
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.deck-item-head {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+}
+
+.deck-item-sub {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.deck-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.deck-cancel-btn {
+    color: #888;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* DECK TAG STYLES */
+.deck-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.tag-badge {
+    background-color: #e6f0ff;
+    color: #0055ff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: lowercase;
+    border: 1px solid #cce0ff;
+    display: inline-block;
+}
+
+/* END OF DECKS PAGE */
+
+/* Mobile responsiveness: stack to 1 column on small screens */
+@media (max-width: 768px) {
+  .about-values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+    .card-row { flex-direction: column; }
+}

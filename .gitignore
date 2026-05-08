@@ -2,3 +2,9 @@
 flashcards.db
 .env
 static/uploads/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
