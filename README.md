@@ -36,7 +36,7 @@ source venv/bin/activate
 3. Install dependencies
 
 ```
-pip install flask peewee
+pip install flask peewee pytest fsrs
 ```
 
 4. Run the app
