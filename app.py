@@ -94,20 +94,20 @@ def write_mode(deck_id):
     if not deck:
         # If deck does not exist, show error and redirect
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
-        return redirect(url_for("decks"))
+        return redirect(url_for("show_decks"))
     # Get all cards in sequential order
     cards = Card.select().where(Card.deck == deck).order_by(Card.id)
     cards_list = list(cards)
     if not cards_list:
         # If no cards exist in deck
         flash("No cards available in this deck to study.")
-        return redirect(url_for("view_deck", id=deck_id))
+        return redirect(url_for("view_deck", deck_id=deck_id))
     # Get current index from URL (default = 0)
     index = request.args.get("index", 0, type=int)
     # If user completed all flashcards
     if index >= len(cards_list):
         flash("You have completed all flashcards in this deck!")
-        return redirect(url_for("view_deck", id=deck_id))
+        return redirect(url_for("view_deck", deck_id=deck_id))
     # Get current card
     card = cards_list[index]
     # Send card + index to frontend
@@ -121,7 +121,7 @@ def write_answer(card_id):
     if not card:
         # If card not found
         flash(f"Error: Could not locate flashcard with provided card id {card_id}")
-        return redirect(url_for("decks"))
+        return redirect(url_for("show_decks"))
     # Get user's typed answer
     user_answer = request.form.get("answer", "").strip().lower()
     # Get correct flashcard answer
