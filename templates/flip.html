@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="flashy-flip-wrapper">
+    
+    <!-- Header & Progress -->
+    <div class="flashy-flip-header">
+        <h2 class="flashy-flip-deck-name">{{ deck.name }}</h2>
+        <!-- Shows "Card X of Y" -->
+        <div class="flashy-flip-progress">Card {{ index + 1 }} of {{ total_cards }}</div>
+    </div>
+
+    <input type="checkbox" id="flashy-flip-toggle" class="flashy-flip-toggle-checkbox">
+
+    <div class="flashy-flip-scene">
+        <div class="flashy-flip-card">
+            
+            <!-- FRONT OF CARD -->
+            <div class="flashy-flip-face flashy-flip-front">
+                <span class="flashy-flip-label">Question</span>
+                
+                <p class="flashy-flip-content-text">{{ card.front }}</p>
+                
+                {% if card.hint %}
+                <details class="flashy-hint-container">
+                    <summary class="flashy-hint-btn">Hint</summary>
+                    <p class="flashy-hint-text">{{ card.hint }}</p>
+                </details>
+                {% endif %}
+                
+                <label for="flashy-flip-toggle" class="flashy-flip-btn">
+                    Show Answer
+                </label>
+            </div>
+
+            <!-- BACK OF CARD -->
+            <div class="flashy-flip-face flashy-flip-back">
+                <span class="flashy-flip-label">Answer</span>
+                
+                <p class="flashy-flip-content-text">{{ card.back }}</p>
+                
+                <form action="{{ url_for('flip_answer', card_id=card.id) }}" method="POST" class="flashy-flip-form">
+                    
+                    <input type="hidden" name="index" value="{{ index }}">
+                    
+                    <p class="flashy-flip-form-prompt">Did you get this right?</p>
+                    <div class="flashy-flip-btn-group">
+                        <button type="submit" name="result" value="no" class="flashy-flip-btn-wrong">No</button>
+                        <button type="submit" name="result" value="yes" class="flashy-flip-btn-correct">Yes</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
