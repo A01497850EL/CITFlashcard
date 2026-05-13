@@ -214,5 +214,26 @@ def flip_answer(card_id):
     # Redirect to next card
     return redirect(url_for("flip_mode", deck_id=card.deck.id, index=next_index))
 
+# UPDATE DECK
+@app.route("/decks/<int:deck_id>/update", methods=["POST"])
+def update_deck(deck_id):
+    """
+    Updates an existing deck's name and description without creating a new deck.
+    """
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        flash(f"Error: Could not locate deck with id {deck_id}")
+        return redirect(url_for("show_decks"))
+    name = request.form.get("name", "").strip()
+    description = request.form.get("description", "").strip()
+    if not name:
+        flash("Deck name is required.")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    deck.name = name
+    deck.description = description
+    deck.save()
+    flash("Deck updated successfully.")
+    return redirect(url_for("view_deck", deck_id=deck.id))
+
 if __name__ == "__main__":
     app.run(debug=True)
