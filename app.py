@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
 from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
-from fsrs import FSRS, Card as FSRSCard, Rating, State
+from fsrs import Scheduler, Card as FSRSCard, Rating, State
 from datetime import datetime, timezone
 
 import os
