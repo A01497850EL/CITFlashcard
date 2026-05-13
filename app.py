@@ -57,7 +57,11 @@ def view_deck(deck_id):
 def create_card(deck_id):
     front = request.form["front"]
     back = request.form["back"]
-    Card.create(deck=deck_id, front=front, back=back)
+    # Grab the hint from the frontend form
+    hint = request.form.get("hint", "") 
+    
+    # Save the hint to the database
+    Card.create(deck=deck_id, front=front, back=back, hint=hint) 
     return redirect(url_for("view_deck", deck_id=deck_id))
 
 # DELETE DECK
