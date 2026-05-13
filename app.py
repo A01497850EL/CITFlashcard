@@ -55,9 +55,9 @@ def view_deck(deck_id):
 # creating cards
 @app.route("/decks/<int:deck_id>/card/create", methods=["POST"])
 def create_card(deck_id):
-    front = request.form["front"]
-    back = request.form["back"]
-    tags = request.form["tags"]
+    front = request.form.get("front", "").strip()
+    back = request.form.get("back", "").strip()
+    tags = request.form.get("tags", "").strip()
     card = Card.create(deck=deck_id, front=front, back=back)
     for tag_name in tags.split(","):
         tag_name = tag_name.strip()
