@@ -507,6 +507,23 @@ body {
 }
 .btn-save:hover { background-color: #333333; }
 
+.btn-delete {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+}
+
+.btn-delete:hover {
+    color: white;
+    background-color: #e60000;
+}
+
 /* Card Containers for Decks Page */
 .card-block {
     background-color: white;
@@ -734,6 +751,389 @@ body {
 }
 
 /* END OF DECKS PAGE */
+
+/* FLASHY FLIP MODE STYLES */
+.flashy-flip-wrapper {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, sans-serif;
+    
+    background-color: #f8f9fa;
+    background-image: url("../images/flashcard_background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    overflow: hidden;
+    padding: 40px 20px;
+}
+
+.flashy-flip-header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.flashy-flip-deck-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111111;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.flashy-flip-progress {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.flashy-flip-scene {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    perspective: 1200px;
+}
+
+.flashy-flip-toggle-checkbox {
+    display: none;
+}
+
+.flashy-flip-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.flashy-flip-toggle-checkbox:checked ~ .flashy-flip-scene .flashy-flip-card {
+    transform: rotateY(180deg);
+}
+
+.flashy-flip-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: #ffffff;
+    border: 2px solid #f1f5f9;
+    border-radius: 32px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.flashy-flip-back {
+    transform: rotateY(180deg);
+    background-color: #ffffff;
+    border: 2px solid #f1f5f9;
+}
+
+.flashy-flip-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: absolute;
+    top: 32px;
+}
+
+.flashy-flip-content-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.4;
+    margin: 0;
+    max-height: 150px; 
+    overflow-y: auto;
+}
+
+/* --- HINT SECTION STYLES --- */
+.flashy-hint-container {
+    margin-top: 24px;
+    margin-bottom: 20px;
+}
+
+.flashy-hint-btn {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    background-color: #f1f5f9;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    list-style: none; /* Removes the default HTML triangle marker */
+}
+
+.flashy-hint-btn::-webkit-details-marker {
+    display: none; /* Removes the triangle marker in Safari */
+}
+
+.flashy-hint-btn:hover {
+    background-color: #e2e8f0;
+    color: #334155;
+}
+
+.flashy-hint-text {
+    margin-top: 12px;
+    font-size: 15px;
+    color: #475569;
+    font-style: italic;
+    animation: flashyFadeIn 0.3s ease-in-out;
+}
+
+@keyframes flashyFadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- FORM & BUTTON STYLES --- */
+.flashy-flip-btn {
+    background-color: #111111;
+    color: #ffffff;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: absolute;
+    bottom: 32px;
+    display: inline-block;
+}
+
+.flashy-flip-btn:hover {
+    background-color: #334155;
+    transform: translateY(-2px);
+}
+
+.flashy-flip-form {
+    position: absolute;
+    bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.flashy-flip-form-prompt {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0;
+}
+
+.flashy-flip-btn-group {
+    display: flex;
+    gap: 16px;
+}
+
+.flashy-flip-btn-wrong,
+.flashy-flip-btn-correct {
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.flashy-flip-btn-wrong {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+.flashy-flip-btn-wrong:hover {
+    background-color: #ffffff;
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.flashy-flip-btn-correct {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+.flashy-flip-btn-correct:hover {
+    background-color: #22c55e;
+    border-color: #22c55e;
+}
+/* --- PROGRESS BAR STYLES --- */
+.flashy-flip-progress-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.flashy-progress-track {
+    width: 100%;
+    max-width: 400px;
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 10px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.flashy-progress-fill {
+    height: 100%;
+    background-color: #111111;
+    border-radius: 10px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Go Forward/Backward Button STYLES --- */
+.flashy-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 40px;
+    z-index: 10;
+}
+
+.flashy-nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    color: #111111;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.flashy-nav-arrow:hover:not(.flashy-nav-disabled) {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.flashy-nav-disabled {
+    color: #cbd5e1;
+    background-color: #f8f9fa;
+    box-shadow: none;
+    cursor: not-allowed;
+    border-color: #f1f5f9;
+}
+
+.flashy-nav-flip-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #111111;
+    color: #ffffff;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.flashy-nav-flip-action:hover {
+    background-color: #334155;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* End of Flip Mode for Cards */
+
+/* --- FLASHY STUDY ACTION BUTTONS --- */
+.flashy-study-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap; 
+}
+
+.flashy-study-actions form {
+    margin: 0;
+    display: flex;
+}
+
+.flashy-btn-study {
+    padding: 10px 24px;
+    font-size: 14px;  
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none;
+    text-align: center;
+    min-width: 120px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flashy-btn-study:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.flashy-btn-study:active {
+    transform: translateY(0);
+}
+
+/* Flip Mode Button Styling */
+.flashy-btn-flip {
+    background-color: #111111;
+    color: #ffffff;
+    border: 2px solid #111111;
+}
+
+.flashy-btn-flip:hover {
+    background-color: #334155;
+    border-color: #334155;
+}
+
+/* Write Mode Button Styling */
+.flashy-btn-write {
+    background-color: #0055ff;
+    color: #ffffff;
+    border: 2px solid #0055ff;
+}
+
+.flashy-btn-write:hover {
+    background-color: #0044cc;
+    border-color: #0044cc;
+}
+
+/* End of Mode Option Buttons */
 
 /* write mode*/
 
