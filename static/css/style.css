@@ -180,6 +180,118 @@ body {
 
 /* END OF RECENT DECKS */
 
+/* Features Section on Landing Page */
+.features-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #6b7280;
+    margin-bottom: 50px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.features-grid {
+    display: grid;
+    /* Makes the columns a bit wider to handle the detailed text */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: #f9fafb;
+    padding: 40px 30px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: left; 
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    border-color: #d1d5db;
+}
+
+.feature-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: inline-block;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.feature-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 22px;
+    color: #111827;
+}
+
+.feature-card p {
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 16px;
+}
+
+/* End Of Features Section */
+
+/* CTA Banner on Landing Page */
+.cta-banner {
+    background: #111827;
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+    max-width: 1000px;
+    margin: 40px auto;
+    border-radius: 24px;
+}
+
+.cta-banner h2 { 
+    font-size: 36px; 
+    margin: 0 0 15px 0; 
+}
+
+.cta-banner p { 
+    font-size: 18px; 
+    color: #9ca3af;
+    margin: 0 0 30px 0; 
+}
+
+.cta-button {
+    display: inline-block;
+    background: white;
+    color: #111827;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.cta-button:hover { 
+    transform: scale(1.05);
+}
+
+/* End of CTA Banner on Landing Page */
+
 /* Footer */
 
 .site-footer {
