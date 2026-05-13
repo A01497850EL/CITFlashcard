@@ -23,6 +23,7 @@ class Card(BaseModel):
     deck = ForeignKeyField(Deck, backref="cards", on_delete="CASCADE")
     front = CharField()
     back = CharField()
+    hint = CharField(null=True)
     mastered = BooleanField(default=False)
     confidence_score = IntegerField(default=0)
 
