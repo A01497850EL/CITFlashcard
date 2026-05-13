@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
 from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
+from peewee import JOIN
 import os
 
 app = Flask(__name__)
@@ -23,7 +24,24 @@ def index():
 
 @app.route("/decks")
 def show_decks():
-    decks = Deck.select()
+# Get search query from URL parameters
+    search_query = request.args.get("search", "").strip()
+# Default query returns all decks
+    decks = Deck.select().distinct()
+    # If user entered a search query
+    if search_query:
+        # Search decks by deck name OR tag name
+        decks = (
+            Deck
+            .select()
+            .join(DeckTagJunction, JOIN.LEFT_OUTER)
+            .join(Tag, JOIN.LEFT_OUTER)
+            .where(
+                (Deck.name.contains(search_query)) |
+                (Tag.name.contains(search_query))
+            )
+            .distinct()
+        )
     return render_template("decks.html", decks=decks)
 
 # creating decks
