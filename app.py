@@ -1,12 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
-<<<<<<< feature/confidence-alg
-from init_db import init_db, db, Deck, Card
+from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
 from fsrs import FSRS, Card as FSRSCard, Rating, State
 from datetime import datetime, timezone
 
-=======
-from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
->>>>>>> dev
 import os
 
 app = Flask(__name__)
@@ -64,7 +60,11 @@ def view_deck(deck_id):
 def create_card(deck_id):
     front = request.form["front"]
     back = request.form["back"]
-    Card.create(deck=deck_id, front=front, back=back)
+    # Grab the hint from the frontend form
+    hint = request.form.get("hint", "") 
+    
+    # Save the hint to the database
+    Card.create(deck=deck_id, front=front, back=back, hint=hint) 
     return redirect(url_for("view_deck", deck_id=deck_id))
 
 # DELETE DECK
@@ -129,7 +129,7 @@ def write_mode(deck_id):
     # Get current card
     card = cards_list[index]
     # Send card + index to frontend
-    return render_template("write.html", deck=deck, card=card, index=index)
+    return render_template("write.html", deck=deck, card=card, index=index, total_cards=len(cards_list))
 
 
 # Handle write mode answer
@@ -148,7 +148,6 @@ def write_answer(card_id):
     is_correct = user_answer == correct_answer
     # Allow user to override incorrect judgement
     override = request.form.get("override")
-
 
     if is_correct or override == "true":
         # Increase confidence score
@@ -190,7 +189,7 @@ def flip_mode(deck_id):
     # Get card in order
     card = cards_list[index]
     # Send card + index to frontend
-    return render_template("flip.html", deck=deck, card=card, index=index)
+    return render_template("flip.html", deck=deck, card=card, index=index, total_cards=len(cards_list))
 
 # Handle user answer and update confidence
 @app.route("/cards/<int:card_id>/flip-answer", methods=["POST"])
@@ -222,7 +221,6 @@ def flip_answer(card_id):
     return redirect(url_for("flip_mode", deck_id=card.deck.id, index=next_index))
 
 if __name__ == "__main__":
-<<<<<<< feature/confidence-alg
     app.run(debug=False)
 
 # STUDY MODE (FSRS)
@@ -411,6 +409,4 @@ def flip_answer(card_id):
 if __name__ == "__main__":
     app.run(debug=False)
     
-=======
     app.run(debug=True)
->>>>>>> dev
