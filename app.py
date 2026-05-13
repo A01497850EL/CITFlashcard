@@ -89,8 +89,8 @@ def update_card(deck_id, card_id):
     """
     Updates a card's information via a card's id
     """
-    #Get Card via ID
-    card = Card.get_or_none(Card.id == card_id)
+    #Get Card via ID with validation
+    card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
     #Validation
     if not card:
         flash(f"Error: Could not locate card with {card_id}")
