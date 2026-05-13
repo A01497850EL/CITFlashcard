@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flashy-flip-wrapper">
+    
+    <div class="flashy-flip-header">
+        <h2 class="flashy-flip-deck-name">{{ deck.name }}</h2>
+        <div class="flashy-flip-progress-text">CARD {{ index + 1 }} OF {{ total_cards }}</div>
+        
+        <div class="flashy-progress-track">
+            <div class="flashy-progress-fill" style="width: {{ ((index + 1) / total_cards) * 100 }}%;"></div>
+        </div>
+    </div>
+
+    <input type="checkbox" id="flashy-flip-toggle" class="flashy-flip-toggle-checkbox">
+
+    <div class="flashy-flip-scene">
+        <div class="flashy-flip-card">
+            
+            <div class="flashy-flip-face flashy-flip-front">
+                <span class="flashy-flip-label">Question</span>
+                <p class="flashy-flip-content-text">{{ card.front }}</p>
+                
+                {% if card.hint %}
+                <details class="flashy-hint-container">
+                    <summary class="flashy-hint-btn">Hint</summary>
+                    <p class="flashy-hint-text">{{ card.hint }}</p>
+                </details>
+                {% endif %}
+            </div>
+
+            <div class="flashy-flip-face flashy-flip-back">
+                <span class="flashy-flip-label">Answer</span>
+                <p class="flashy-flip-content-text">{{ card.back }}</p>
+                
+                <form action="{{ url_for('flip_answer', card_id=card.id) }}" method="POST" class="flashy-flip-form">
+                    <input type="hidden" name="index" value="{{ index }}">
+                    <p class="flashy-flip-form-prompt">Did you get this right?</p>
+                    <div class="flashy-flip-btn-group">
+                        <button type="submit" name="result" value="no" class="flashy-flip-btn-wrong">No</button>
+                        <button type="submit" name="result" value="yes" class="flashy-flip-btn-correct">Yes</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="flashy-bottom-nav">
+        {% if index > 0 %}
+            <a href="{{ url_for('flip_mode', deck_id=deck.id, index=index-1) }}" class="flashy-nav-arrow" id="flashy-btn-prev">&larr;</a>
+        {% else %}
+            <div class="flashy-nav-arrow flashy-nav-disabled">&larr;</div>
+        {% endif %}
+
+        <label for="flashy-flip-toggle" class="flashy-nav-flip-action" id="flashy-btn-flip">
+            &#8635; Flip Card
+        </label>
+
+        {% if index < total_cards - 1 %}
+            <a href="{{ url_for('flip_mode', deck_id=deck.id, index=index+1) }}" class="flashy-nav-arrow" id="flashy-btn-next">&rarr;</a>
+        {% else %}
+            <div class="flashy-nav-arrow flashy-nav-disabled">&rarr;</div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

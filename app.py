@@ -122,7 +122,7 @@ def write_mode(deck_id):
     # Get current card
     card = cards_list[index]
     # Send card + index to frontend
-    return render_template("write.html", deck=deck, card=card, index=index)
+    return render_template("write.html", deck=deck, card=card, index=index, total_cards=len(cards_list))
 
 
 # Handle write mode answer
@@ -141,7 +141,6 @@ def write_answer(card_id):
     is_correct = user_answer == correct_answer
     # Allow user to override incorrect judgement
     override = request.form.get("override")
-
 
     if is_correct or override == "true":
         # Increase confidence score
@@ -183,7 +182,7 @@ def flip_mode(deck_id):
     # Get card in order
     card = cards_list[index]
     # Send card + index to frontend
-    return render_template("flip.html", deck=deck, card=card, index=index)
+    return render_template("flip.html", deck=deck, card=card, index=index, total_cards=len(cards_list))
 
 # Handle user answer and update confidence
 @app.route("/cards/<int:card_id>/flip-answer", methods=["POST"])
