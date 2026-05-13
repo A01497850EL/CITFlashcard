@@ -6,24 +6,24 @@
     {% if deck %}
         <a href="{{ url_for('show_decks') }}" class="deck-nav-back">&larr; Back to all decks</a>
         
-        <div class="deck-header-top">
-            <div>
-                <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
-                <p class="deck-desc-text">{{ deck.description }}</p>
-                
-                {% if deck.tags %}
-                <div class="deck-tags">
-                    {% for junction in deck.tags %}
-                        <span class="tag-badge">{{ junction.tags.name }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
+    <div class="deck-header-top">
+        <div>
+            <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
+            <p class="deck-desc-text">{{ deck.description }}</p>
+        
+            {% if deck.tags %}
+            <div class="deck-tags">
+                {% for junction in deck.tags %}
+                    <span class="tag-badge">{{ junction.tags.name }}</span>
+                {% endfor %}
             </div>
-            
-            <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
-                <button type="submit" class="btn-delete">Delete Deck</button>
-            </form>
+            {% endif %}
         </div>
+
+        <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
+            <button type="submit" class="btn-delete">Delete Deck</button>
+        </form>
+    </div>
 
         <div class="divider divider-sm"></div>
 

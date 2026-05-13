@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="background">
+<section class="study-container">
+    <div class="written-card">
+        <span class="prompt-label">Question</span>
+        <h2 class="question-text">{{ card.front }}</h2>
+
+       <form id="answer-form" 
+                action="{{ url_for('write_answer', card_id=card.id) }}" 
+                method="POST" 
+                data-answer="{{ card.back }}">
+
+            <input type="hidden" name="index" value="{{ index }}">
+            
+            <div id="input-section">
+                <div class="input-wrapper">
+                    <input type="text" id="user-answer" name="answer" class="answer-input" placeholder="Type your answer here..." autocomplete="off" autofocus required>
+                </div>
+                <div class="controls">
+                    <a href="{{ url_for('write_mode', deck_id=deck.id, index=index + 1) }}" class="btn btn-skip">Pass</a>
+                    <button type="submit" class="btn btn-primary">Check Answer</button>
+                </div>
+            </div>
+
+            <!-- This area now handles both Right and Wrong states -->
+            <div id="feedback-area" class="hidden">
+                <div id="correct-msg" class="hidden feedback-box feedback-right">
+                    <p><strong>Correct!</strong></p>
+                </div>
+
+                <div id="wrong-msg" class="hidden feedback-box feedback-wrong">
+                    <p id="your-answer-display"></p>
+                    <p><strong>Correct Answer:</strong> {{ card.back }}</p>
+                </div>
+
+                <div class="controls">
+                    <input type="hidden" id="override-field" name="override" value="false">
+                    <button type="button" id="override-btn" class="btn btn-skip">I was right (Override)</button>
+                    <button type="submit" class="btn btn-primary">Next Card →</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

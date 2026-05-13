@@ -507,22 +507,6 @@ body {
 }
 .btn-save:hover { background-color: #333333; }
 
-.btn-delete {
-    background-color: #f1f1f1;
-    color: #333;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.btn-delete:hover {
-    background-color: #ffe5e5;
-    color: #cc0000;
-}
-
 /* Card Containers for Decks Page */
 .card-block {
     background-color: white;
@@ -604,6 +588,45 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-top: 20px;
+}
+
+/* Container to keep everything on one line */
+.btn-options, .study-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Shared styling for links and buttons */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Sizing & Shape */
+    padding: 8px 16px;
+    height: 38px; /* Fixed height ensures they match perfectly */
+    min-width: 110px;
+    border-radius: 6px;
+    
+    /* Typography */
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    
+    /* Default Colors */
+    /* background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease; */
+}
+
+/* Reset form margins to prevent alignment shifts */
+.btn-options form {
+    margin: 0;
+    display: flex;
 }
 
 /* Modifies the existing .page-title margin specifically for the single deck view */
@@ -711,6 +734,154 @@ body {
 }
 
 /* END OF DECKS PAGE */
+
+/* write mode*/
+
+.background {
+    background-image: url('../images/flashcard_background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* This makes it feel full-screen like the flip side */
+    background-repeat: no-repeat;
+    display: flex;
+  
+
+}
+
+.study-container {
+    width: 100%;
+    max-width: 650px;
+    margin: 60px auto; /* '60px' for top/bottom, 'auto' for left/right */
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.written-card {
+    background-color: #ffffff; /* Explicitly white */
+    border: 1px solid #e5e7eb; /* Light but visible border */
+    border-radius: 12px;
+    padding: 60px 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Softer, deeper shadow */
+    margin-bottom: 24px;
+}
+
+.prompt-label {
+    font-size: 12px;
+    color: var(--accent-blue);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.question-text {
+    font-size: 32px;
+    font-weight: 700;
+            margin: 0;
+}
+
+.input-wrapper {
+            position: relative;
+            margin-top: 30px;
+}
+
+.answer-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+}
+
+.answer-input:focus {
+    border-color: var(--accent-blue);
+}
+
+.controls {
+    display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 12px;
+        }
+
+/* Base button styles to ensure they are visible and solid */
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-family: inherit;
+    font-size: 14px;
+    transition: background-color 0.2s, transform 0.1s;
+    opacity: 1 !important; 
+}
+
+/* Specifically for the Check Answer button */
+.btn-primary {
+    background-color: #4A90E2; 
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #357ABD; 
+    filter: none; 
+}
+
+.btn-skip {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.btn-skip:hover {
+    background-color: #e5e7eb;
+}
+
+.hidden {
+    display: none;
+}
+#feedback-area {
+    margin-top: 40px; /* Pushes the box away from the 3+3 text */
+}
+
+.feedback-box {
+    padding: 30px;
+    border-radius: 12px; /* Matches your card's rounded corners */
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* green for Success */
+.feedback-right {
+    background-color: #e6f4ea; 
+    color: #1e7e34;
+    border: 1px solid #ceead6;
+}
+
+/* Red for Mistakes */
+.feedback-wrong {
+    background-color: #fce8e6;
+    color: #c5221f;
+    border: 1px solid #fad2cf;
+}
+
+.feedback-box p {
+    margin: 8px 0; /* Adds space between "Your Answer" and "Correct Answer" */
+}
+
+#your-answer-display {
+    color: #5f6368;
+    text-decoration: line-through;
+}
 
 /* Mobile responsiveness: stack to 1 column on small screens */
 @media (max-width: 768px) {
