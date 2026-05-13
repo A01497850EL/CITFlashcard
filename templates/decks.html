@@ -20,9 +20,25 @@
                 {% endif %}
             </div>
             
-            <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
-                <button type="submit" class="btn-delete">Delete Deck</button>
-            </form>
+            <!-- Action buttons grouped together -->
+            <div class="flashy-study-actions">
+                
+                <!-- Links to @app.route("/decks/<int:deck_id>/flip") -->
+                <a href="{{ url_for('flip_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
+                    Flip Mode
+                </a>
+
+                <!-- Links to @app.route("/decks/<int:deck_id>/write") -->
+                <a href="{{ url_for('write_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-write">
+                    Write Mode
+                </a>
+
+                <!-- Existing Delete Button -->
+                <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
+                    <button type="submit" class="btn-delete">Delete Deck</button>
+                </form>
+
+            </div>
         </div>
 
         <div class="divider divider-sm"></div>
@@ -63,7 +79,7 @@
                 
                 <div class="form-group">
                     <label class="hint-text-label">HINT (Optional)</label>
-                    <input type="text" placeholder="Add a hint to help during studying..." class="input-field input-hint-field">
+                    <input type="text" name="hint" placeholder="Add a hint to help during studying..." class="input-field input-hint-field">
                 </div>
 
                 <div class="btn-align-right">
