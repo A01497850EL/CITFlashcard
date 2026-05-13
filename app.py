@@ -217,21 +217,31 @@ def flip_answer(card_id):
 # UPDATE DECK
 @app.route("/decks/<int:deck_id>/update", methods=["POST"])
 def update_deck(deck_id):
-    """
-    Updates an existing deck's name and description without creating a new deck.
-    """
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         flash(f"Error: Could not locate deck with id {deck_id}")
         return redirect(url_for("show_decks"))
     name = request.form.get("name", "").strip()
     description = request.form.get("description", "").strip()
+    tags = request.form.get("tags", "")
     if not name:
         flash("Deck name is required.")
         return redirect(url_for("view_deck", deck_id=deck_id))
+    
     deck.name = name
     deck.description = description
     deck.save()
+    DeckTagJunction.delete().where(
+        DeckTagJunction.decks == deck
+    ).execute()
+    # Add updated tags
+    for tag_name in tags.split(","):
+        tag_name = tag_name.strip()
+        if tag_name:
+          # Get or create tag
+            tag, created = Tag.get_or_create(name=tag_name)
+            # Create new deck-tag relationship
+            DeckTagJunction.create(decks=deck, tags=tag)
     flash("Deck updated successfully.")
     return redirect(url_for("view_deck", deck_id=deck.id))
 
