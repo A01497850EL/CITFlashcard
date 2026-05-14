@@ -1,5 +1,5 @@
 import pytest
-from init_db import Deck, Card
+from init_db import Deck, Card, Tag, DeckTagJunction, CardTagJunction
 
 class TestDecks:
     def test_create_deck(self, test_client):
@@ -14,12 +14,50 @@ class TestDecks:
         assert b"Literature" in response.data
         assert Deck.select().where(Deck.name == "Literature").exists()
 
+    def test_create_deck_empty_tag(self, test_client):
+        """Testing Deck Creation without adding tags"""
+        response = test_client.post("/decks/create", data={
+            "name": "Chemistry",
+            "description": "Periodic Table"
+        }, follow_redirects=True)
+
+        deck = Deck.get_or_none(Deck.name == "Chemistry")
+        assert response.status_code == 200
+        assert deck is not None
+        assert deck.description == "Periodic Table"
+        
+        tag_count = DeckTagJunction.select().where(DeckTagJunction.decks == deck).count()
+        assert tag_count == 0
+
+    def test_create_deck_empty_name(self, test_client):
+        """Testing Deck Creation without adding name"""
+        response = test_client.post("/decks/create", data={
+            "description": "Periodic Table"
+        }, follow_redirects=True)
+
+        assert response.status_code == 400
+
+        deck = Deck.get_or_none(Deck.description == "Periodic Table")
+        assert deck is None
+
+        tag_count = DeckTagJunction.select().count()
+        assert tag_count == 0
+
     def test_list_decks(self, test_client, seeded_data):
         """Testing Getting ALL Decks."""
         response = test_client.get("/decks")
         
         assert response.status_code == 200
         assert b"Biology" in response.data  
+
+    def test_list_empty_decks(self, test_client):
+        """Testing Getting ALL decks while no decks exist in db"""
+        response = test_client.get("/decks")
+
+        assert response.status_code == 200
+        deck_count = Deck.select().count()
+        assert deck_count == 0
+        
 
     def test_view_single_deck(self, test_client, seeded_data):
         """Testing Getting Singular Deck."""
