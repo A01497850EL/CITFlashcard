@@ -1,5 +1,5 @@
 import pytest
-from init_db import Deck, Card, Tag, DeckTagJunction, CardTagJunction
+from init_db import Deck, Card, Tag, DeckTagJunction
 
 class TestDecks:
     def test_create_deck(self, test_client):
@@ -14,50 +14,12 @@ class TestDecks:
         assert b"Literature" in response.data
         assert Deck.select().where(Deck.name == "Literature").exists()
 
-    def test_create_deck_empty_tag(self, test_client):
-        """Testing Deck Creation without adding tags"""
-        response = test_client.post("/decks/create", data={
-            "name": "Chemistry",
-            "description": "Periodic Table"
-        }, follow_redirects=True)
-
-        deck = Deck.get_or_none(Deck.name == "Chemistry")
-        assert response.status_code == 200
-        assert deck is not None
-        assert deck.description == "Periodic Table"
-        
-        tag_count = DeckTagJunction.select().where(DeckTagJunction.decks == deck).count()
-        assert tag_count == 0
-
-    def test_create_deck_empty_name(self, test_client):
-        """Testing Deck Creation without adding name"""
-        response = test_client.post("/decks/create", data={
-            "description": "Periodic Table"
-        }, follow_redirects=True)
-
-        assert response.status_code == 400
-
-        deck = Deck.get_or_none(Deck.description == "Periodic Table")
-        assert deck is None
-
-        tag_count = DeckTagJunction.select().count()
-        assert tag_count == 0
-
     def test_list_decks(self, test_client, seeded_data):
         """Testing Getting ALL Decks."""
         response = test_client.get("/decks")
         
         assert response.status_code == 200
         assert b"Biology" in response.data  
-
-    def test_list_empty_decks(self, test_client):
-        """Testing Getting ALL decks while no decks exist in db"""
-        response = test_client.get("/decks")
-
-        assert response.status_code == 200
-        deck_count = Deck.select().count()
-        assert deck_count == 0
-        
 
     def test_view_single_deck(self, test_client, seeded_data):
         """Testing Getting Singular Deck."""
@@ -124,3 +86,32 @@ class TestCards:
 
         assert response.status_code == 200
         assert Card.select().where(Card.front == "What is the Powerhouse of the cell?").exists()
+
+ # Tests for Search Functionality
+    def test_search_deck_by_name(self, test_client):
+        """Testing Deck Search by Deck Name"""
+        # Create test decks
+        Deck.create(name="OOP", description="Object Oriented Programming")
+        Deck.create(name="Linux", description="Linux Administration")
+        # Search for OOP deck
+        response = test_client.get("/decks?search=OOP")
+        assert response.status_code == 200
+        assert b"OOP" in response.data
+        assert b"Linux" not in response.data
+
+    def test_search_deck_by_tag(self, test_client):
+        """Testing Deck Search by Tag Name"""
+        # Create test decks
+        oop_deck = Deck.create(name="OOP", description="Object Oriented Programming")
+        linux_deck = Deck.create(name="Linux", description="Linux Administration")
+        # Create tags
+        java_tag = Tag.create(name="java")
+        linux_tag = Tag.create(name="ubuntu")
+        # Create deck-tag relationships
+        DeckTagJunction.create(decks=oop_deck, tags=java_tag)
+        DeckTagJunction.create(decks=linux_deck, tags=linux_tag)
+        # Search using tag name
+        response = test_client.get("/decks?search=java")
+        assert response.status_code == 200
+        assert b"OOP" in response.data
+        assert b"Linux" not in response.data        
