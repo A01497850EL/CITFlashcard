@@ -20,17 +20,3 @@ jobs:
       - name: Test with pytest
         run: |
           pytest -v
-  create-pull-request:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Create Pull Request
-        run: gh pr create -B dev -H ${{ github.ref_name }} --title "Merge ${{ github.ref_name }} into dev" --body "Automatic PR from Github Actions"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
