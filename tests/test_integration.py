@@ -114,4 +114,74 @@ class TestCards:
         response = test_client.get("/decks?search=java")
         assert response.status_code == 200
         assert b"OOP" in response.data
-        assert b"Linux" not in response.data        
+        assert b"Linux" not in response.data
+
+    # Tests for Flip Mode Functionality
+    def test_flip_mode_page_loads(self, test_client, seeded_data):
+        """Testing Flip Mode Page Load"""
+        deck, card = seeded_data
+        response = test_client.get(f"/decks/{deck.id}/flip")
+        assert response.status_code == 200
+        assert b"What is DNA?" in response.data
+
+    def test_flip_mode_yes_increases_confidence(self, test_client, seeded_data):
+        """Testing Flip Mode Yes Response"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/flip-answer",
+            data={
+                "result": "yes",
+                "index": 0
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 1
+
+    def test_flip_mode_no_decreases_confidence(self, test_client, seeded_data):
+        """Testing Flip Mode No Response"""
+        deck, card = seeded_data
+        # Set confidence score before decreasing
+        card.confidence_score = 2
+        card.save()
+        response = test_client.post(
+            f"/cards/{card.id}/flip-answer",
+            data={
+                "result": "no",
+                "index": 0
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 1
+
+    def test_flip_mode_confidence_does_not_go_below_zero(self, test_client, seeded_data):
+        """Testing Flip Mode Confidence Floor"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/flip-answer",
+            data={
+                "result": "no",
+                "index": 0
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 0
+
+    def test_flip_mode_invalid_response(self, test_client, seeded_data):
+        """Testing Invalid Flip Mode Response"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/flip-answer",
+            data={
+                "result": "invalid",
+                "index": 0
+            },
+            follow_redirects=True
+        )
+        assert response.status_code == 200
+             
