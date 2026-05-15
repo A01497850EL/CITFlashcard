@@ -6,32 +6,34 @@
     {% if deck %}
         <a href="{{ url_for('show_decks') }}" class="deck-nav-back">&larr; Back to all decks</a>
         
-    <div class="deck-header-top">
-        <div>
-            <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
-            <p class="deck-desc-text">{{ deck.description }}</p>
+        <div class="deck-header-top">
+            <div>
+                <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
+                <p class="deck-desc-text">{{ deck.description }}</p>
+                
+                {% if deck.tags %}
+                <div class="deck-tags">
+                    {% for junction in deck.tags %}
+                        <span class="tag-badge">{{ junction.tags.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div> 
             
-            {% if deck.tags %}
-            <div class="deck-tags">
-                {% for junction in deck.tags %}
-                    <span class="tag-badge">{{ junction.tags.name }}</span>
-                {% endfor %}
+            <div class="flashy-study-actions">
+                <a href="{{ url_for('flip_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
+                    Flip Mode
+                </a>
+
+                <a href="{{ url_for('write_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-write">
+                    Write Mode
+                </a>
+
+                <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
+                    <button type="submit" class="btn-delete">Delete Deck</button>
+                </form>
             </div>
-            {% endif %}
-        </div> <div class="flashy-study-actions">
-            <a href="{{ url_for('flip_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
-                Flip Mode
-            </a>
-
-            <a href="{{ url_for('write_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-write">
-                Write Mode
-            </a>
-
-            <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
-                <button type="submit" class="btn-delete">Delete Deck</button>
-            </form>
         </div>
-    </div>
             
         <div class="divider divider-sm"></div>
 
@@ -55,20 +57,54 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="hint-text-label">HINT (Optional)</label>
-                    <input type="text" name="hint" placeholder="Add a hint to help during studying..." class="input-field input-hint-field">
+                <div class="card-row">
+                    <div class="card-side">
+                        <label class="hint-text-label">HINT (Optional)</label>
+                        <input type="text" name="hint" placeholder="Add a hint to help during studying..." class="input-field input-hint-field">
+                    </div>
+                    <div class="card-side">
+                        <label class="hint-text-label">TAGS (Optional, Comma separated)</label>
+                        <input type="text" name="tags" placeholder="e.g. math, chapter 1" class="input-field input-hint-field">
+                    </div>
                 </div>
 
-                <div class="btn-align-right">
+                <div class="btn-align-right" style="margin-top: 15px;">
                     <button type="submit" class="btn-save">Save Card to Deck</button>
                 </div>
             </form>
         </div>
 
         {% if cards|length > 0 %}
-            {% for card in cards %}
-                <div class="card-block">
+            {% for card in cards %}                
+                {% set card_tags = card.card_link | list %}
+                
+                <div class="card-block flashy-relative-container">
+                    <div class="flashy-hover-actions">
+                        <details class="flashy-edit-dropdown">
+                            <summary class="flashy-action-btn flashy-btn-pencil" title="Edit Card">✏️</summary>
+                            <div class="flashy-dropdown-content">
+                                <form action="{{ url_for('update_card', deck_id=deck.id, card_id=card.id) }}" method="POST">
+                                    <label>Front</label>
+                                    <textarea name="front" required>{{ card.front }}</textarea>
+                                    
+                                    <label>Back</label>
+                                    <textarea name="back" required>{{ card.back }}</textarea>
+                                    
+                                    <label>Hint</label>
+                                    <input type="text" name="hint" value="{{ card.hint or '' }}">
+                                    
+                                    <label>Tags (Comma separated)</label>
+                                    <input type="text" name="tags" placeholder="Tag1, Tag2..." value="{% for junction in card_tags %}{{ junction.tags.name }}{% if not loop.last %}, {% endif %}{% endfor %}">
+                                    <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">Update</button>
+                                </form>
+                            </div>
+                        </details>
+            
+                        <form action="{{ url_for('delete_card', deck_id=deck.id, card_id=card.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this card?');">
+                            <button type="submit" class="flashy-action-btn flashy-btn-trash" title="Delete Card">🗑️</button>
+                        </form>
+                    </div>
+
                     <div class="card-row">
                         <div class="card-side">
                             <label>FRONT</label>
@@ -79,6 +115,26 @@
                             <div class="card-display-box">{{ card.back }}</div>
                         </div>
                     </div>
+
+                    {% if card.hint or card_tags|length > 0 %}
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eaeaea;">
+                        {% if card.hint %}
+                        <div style="margin-bottom: 10px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; margin-right: 8px;">Hint:</span>
+                            <span style="color: #666; font-style: italic; font-size: 14px;">{{ card.hint }}</span>
+                        </div>
+                        {% endif %}
+            
+                        {% if card_tags|length > 0 %}
+                        <div class="deck-tags" style="margin-top: 0;">
+                            {% for junction in card_tags %}
+                                <span class="tag-badge">{{ junction.tags.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
                 </div>
             {% endfor %}
         {% endif %}
@@ -88,29 +144,77 @@
         
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
+        {% else %}
+            <div class="decks-grid">
+                <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
+                    <span class="plus-icon">+</span>
+                    <h3>Create New Deck</h3>
+                </a>
+
+                {% for d in decks %}
+                    <div class="flashy-relative-container">
+                        <div class="flashy-hover-actions">
+                            <details class="flashy-edit-dropdown">
+                                <summary class="flashy-action-btn flashy-btn-pencil" title="Edit Deck">✏️</summary>
+                                <div class="flashy-dropdown-content">
+                                    <form action="{{ url_for('update_deck', deck_id=d.id) }}" method="POST">
+                                        <label>Deck Name</label>
+                                        <input type="text" name="name" value="{{ d.name }}" required>
+                                        <label>Description</label>
+                                        <textarea name="description">{{ d.description }}</textarea>
+                                        <label>Tags (Comma separated)</label>
+                                        <input type="text" name="tags" placeholder="e.g. math, science" value="{% for junction in d.tags %}{{ junction.tags.name }}{% if not loop.last %}, {% endif %}{% endfor %}">
+                                        <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">Save Changes</button>
+                                    </form>
+                                </div>
+                            </details>
+                        </div>
+
+                        <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
+                            <h3 class="deck-item-head">{{ d.name }}</h3>
+                            <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
+                
+                            {% if d.tags %}
+                            <div class="deck-tags">
+                                {% for junction in d.tags %}
+                                    <span class="tag-badge">{{ junction.tags.name }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
 
-        <div class="decks-grid">
-            <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
-                <span class="plus-icon">+</span>
-                <h3>Create New Deck</h3>
-            </a>
+        <hr class="divider">
 
-            {% for d in decks %}
-                <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
-                    <h3 class="deck-item-head">{{ d.name }}</h3>
-                    <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
-                    
-                    {% if d.tags %}
-                    <div class="deck-tags">
-                        {% for junction in d.tags %}
-                            <span class="tag-badge">{{ junction.tags.name }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </a>
-            {% endfor %}
+        <div id="create-deck">
+            <h1 class="page-title">Create Deck</h1>
+            
+            <form action="{{ url_for('create_deck') }}" method="POST">
+                <div class="form-group">
+                    <label>Deck title</label>
+                    <input type="text" name="name" placeholder="Enter deck name..." required class="input-field">
+                </div>
+
+                <div class="form-group">
+                    <label>Description (optional)</label>
+                    <textarea name="description" placeholder="What is this deck about?" rows="3" class="input-field"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tags (Comma separated)</label>
+                    <input type="text" name="tags" placeholder="e.g. math, exam 1" class="input-field">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding-top: 20px;">
+                    <a href="{{ url_for('show_decks') }}" style="color: #888; font-weight: 600; text-decoration: none;">Cancel</a>
+                    <button type="submit" class="btn-save">Save Deck</button>
+                </div>
+            </form>
         </div>
+
     {% endif %}
 
 </div>
