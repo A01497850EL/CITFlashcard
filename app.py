@@ -111,7 +111,7 @@ def delete_deck(deck_id):
         flash(f"Error: Could not locate deck with id {deck_id}")
     # Redirect back to decks page
     return redirect(url_for("show_decks"))
-
+    
 # Update Flashcard
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/update", methods=["POST"])
 def update_card(deck_id, card_id):
@@ -152,7 +152,7 @@ def update_card(deck_id, card_id):
             CardTagJunction.create(cards=card, tags=tag)
 
     return redirect(url_for("view_deck", deck_id=deck_id))
-    
+
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
 def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
