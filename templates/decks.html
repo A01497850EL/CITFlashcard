@@ -6,22 +6,24 @@
     {% if deck %}
         <a href="{{ url_for('show_decks') }}" class="deck-nav-back">&larr; Back to all decks</a>
         
-        <div class="deck-header-top">
-            <div>
-                <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
-                <p class="deck-desc-text">{{ deck.description }}</p>
-                
-                {% if deck.tags %}
-                <div class="deck-tags">
-                    {% for junction in deck.tags %}
-                        <span class="tag-badge">{{ junction.tags.name }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
+    <div class="deck-header-top">
+        <div>
+            <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
+            <p class="deck-desc-text">{{ deck.description }}</p>
+        
+            {% if deck.tags %}
+            <div class="deck-tags">
+                {% for junction in deck.tags %}
+                    <span class="tag-badge">{{ junction.tags.name }}</span>
+                {% endfor %}
             </div>
+            {% endif %}
             
+            
+        </div>
+
             <!-- Action buttons grouped together -->
-            <div class="flashy-study-actions">
+         <div class="flashy-study-actions">
                 
                 <!-- Links to @app.route("/decks/<int:deck_id>/flip") -->
                 <a href="{{ url_for('flip_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
@@ -39,7 +41,8 @@
                 </form>
 
             </div>
-        </div>
+       
+    </div>
 
         <div class="divider divider-sm"></div>
 
