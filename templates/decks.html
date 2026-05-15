@@ -10,7 +10,7 @@
         <div>
             <h1 class="page-title page-title-sm">{{ deck.name }}</h1>
             <p class="deck-desc-text">{{ deck.description }}</p>
-        
+            
             {% if deck.tags %}
             <div class="deck-tags">
                 {% for junction in deck.tags %}
@@ -18,52 +18,27 @@
                 {% endfor %}
             </div>
             {% endif %}
-            
-            
+        </div> <div class="flashy-study-actions">
+            <a href="{{ url_for('flip_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
+                Flip Mode
+            </a>
+
+            <a href="{{ url_for('write_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-write">
+                Write Mode
+            </a>
+
+            <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
+                <button type="submit" class="btn-delete">Delete Deck</button>
+            </form>
         </div>
-
-            <!-- Action buttons grouped together -->
-         <div class="flashy-study-actions">
-                
-                <!-- Links to @app.route("/decks/<int:deck_id>/flip") -->
-                <a href="{{ url_for('flip_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
-                    Flip Mode
-                </a>
-
-                <!-- Links to @app.route("/decks/<int:deck_id>/write") -->
-                <a href="{{ url_for('write_mode', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-write">
-                    Write Mode
-                </a>
-
-                <!-- Existing Delete Button -->
-                <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
-                    <button type="submit" class="btn-delete">Delete Deck</button>
-                </form>
-
-            </div>
-       
     </div>
-
+            
         <div class="divider divider-sm"></div>
 
         <h3 class="deck-subheading">Cards in Deck</h3>
+
         {% if cards|length == 0 %}
             <p class="deck-empty-state">No cards yet. Start adding them below!</p>
-        {% else %}
-            {% for card in cards %}
-                <div class="card-block">
-                    <div class="card-row">
-                        <div class="card-side">
-                            <label>FRONT</label>
-                            <div class="card-display-box">{{ card.front }}</div>
-                        </div>
-                        <div class="card-side">
-                            <label>BACK</label>
-                            <div class="card-display-box">{{ card.back }}</div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
         {% endif %}
 
         <div class="add-card-section">
@@ -91,59 +66,51 @@
             </form>
         </div>
 
+        {% if cards|length > 0 %}
+            {% for card in cards %}
+                <div class="card-block">
+                    <div class="card-row">
+                        <div class="card-side">
+                            <label>FRONT</label>
+                            <div class="card-display-box">{{ card.front }}</div>
+                        </div>
+                        <div class="card-side">
+                            <label>BACK</label>
+                            <div class="card-display-box">{{ card.back }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
     {% else %}
         <h1 class="page-title">Your Decks</h1>
         
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
-        {% else %}
-            <div class="decks-grid">
-                {% for d in decks %}
-                    <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
-                        <h3 class="deck-item-head">{{ d.name }}</h3>
-                        <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
-                        
-                        {% if d.tags %}
-                        <div class="deck-tags">
-                            {% for junction in d.tags %}
-                                <span class="tag-badge">{{ junction.tags.name }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </a>
-                {% endfor %}
-            </div>
         {% endif %}
 
-        <hr class="divider">
+        <div class="decks-grid">
+            <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
+                <span class="plus-icon">+</span>
+                <h3>Create New Deck</h3>
+            </a>
 
-        <div id="create-deck">
-            <h1 class="page-title">Create Deck</h1>
-            
-            <form action="{{ url_for('create_deck') }}" method="POST">
-                <div class="form-group">
-                    <label>Deck title</label>
-                    <input type="text" name="name" placeholder="Enter deck name..." required class="input-field">
-                </div>
-
-                <div class="form-group">
-                    <label>Description (optional)</label>
-                    <textarea name="description" placeholder="What is this deck about?" rows="3" class="input-field"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Tags (optional)</label>
-                    <input type="text" name="tags" placeholder="e.g. Midterm, Chapter 1, Hard" class="input-field">
-                    <p class="form-helper-text">Separate multiple tags with commas.</p>
-                </div>
-
-                <div class="deck-form-actions">
-                    <a href="{{ url_for('show_decks') }}" class="deck-cancel-btn">Cancel</a>
-                    <button type="submit" class="btn-save">Save Deck</button>
-                </div>
-            </form>
+            {% for d in decks %}
+                <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
+                    <h3 class="deck-item-head">{{ d.name }}</h3>
+                    <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
+                    
+                    {% if d.tags %}
+                    <div class="deck-tags">
+                        {% for junction in d.tags %}
+                            <span class="tag-badge">{{ junction.tags.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </a>
+            {% endfor %}
         </div>
-
     {% endif %}
 
 </div>
