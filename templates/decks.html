@@ -144,75 +144,47 @@
         
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
-        {% else %}
-            <div class="decks-grid">
-                <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
-                    <span class="plus-icon">+</span>
-                    <h3>Create New Deck</h3>
-                </a>
-
-                {% for d in decks %}
-                    <div class="flashy-relative-container">
-                        <div class="flashy-hover-actions">
-                            <details class="flashy-edit-dropdown">
-                                <summary class="flashy-action-btn flashy-btn-pencil" title="Edit Deck">✏️</summary>
-                                <div class="flashy-dropdown-content">
-                                    <form action="{{ url_for('update_deck', deck_id=d.id) }}" method="POST">
-                                        <label>Deck Name</label>
-                                        <input type="text" name="name" value="{{ d.name }}" required>
-                                        <label>Description</label>
-                                        <textarea name="description">{{ d.description }}</textarea>
-                                        <label>Tags (Comma separated)</label>
-                                        <input type="text" name="tags" placeholder="e.g. math, science" value="{% for junction in d.tags %}{{ junction.tags.name }}{% if not loop.last %}, {% endif %}{% endfor %}">
-                                        <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">Save Changes</button>
-                                    </form>
-                                </div>
-                            </details>
-                        </div>
-
-                        <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
-                            <h3 class="deck-item-head">{{ d.name }}</h3>
-                            <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
-                
-                            {% if d.tags %}
-                            <div class="deck-tags">
-                                {% for junction in d.tags %}
-                                    <span class="tag-badge">{{ junction.tags.name }}</span>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
         {% endif %}
+        
+        <div class="decks-grid">
+            <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
+                <span class="plus-icon">+</span>
+                <h3>Create New Deck</h3>
+            </a>
 
-        <hr class="divider">
+            {% for d in decks %}
+                <div class="flashy-relative-container">
+                    <div class="flashy-hover-actions">
+                        <details class="flashy-edit-dropdown">
+                            <summary class="flashy-action-btn flashy-btn-pencil" title="Edit Deck">✏️</summary>
+                            <div class="flashy-dropdown-content">
+                                <form action="{{ url_for('update_deck', deck_id=d.id) }}" method="POST">
+                                    <label>Deck Name</label>
+                                    <input type="text" name="name" value="{{ d.name }}" required>
+                                    <label>Description</label>
+                                    <textarea name="description">{{ d.description }}</textarea>
+                                    <label>Tags (Comma separated)</label>
+                                    <input type="text" name="tags" placeholder="e.g. math, science" value="{% for junction in d.tags %}{{ junction.tags.name }}{% if not loop.last %}, {% endif %}{% endfor %}">
+                                    <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">Save Changes</button>
+                                </form>
+                            </div>
+                        </details>
+                    </div>
 
-        <div id="create-deck">
-            <h1 class="page-title">Create Deck</h1>
+                    <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
+                        <h3 class="deck-item-head">{{ d.name }}</h3>
+                        <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
             
-            <form action="{{ url_for('create_deck') }}" method="POST">
-                <div class="form-group">
-                    <label>Deck title</label>
-                    <input type="text" name="name" placeholder="Enter deck name..." required class="input-field">
+                        {% if d.tags %}
+                        <div class="deck-tags">
+                            {% for junction in d.tags %}
+                                <span class="tag-badge">{{ junction.tags.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </a>
                 </div>
-
-                <div class="form-group">
-                    <label>Description (optional)</label>
-                    <textarea name="description" placeholder="What is this deck about?" rows="3" class="input-field"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Tags (Comma separated)</label>
-                    <input type="text" name="tags" placeholder="e.g. math, exam 1" class="input-field">
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding-top: 20px;">
-                    <a href="{{ url_for('show_decks') }}" style="color: #888; font-weight: 600; text-decoration: none;">Cancel</a>
-                    <button type="submit" class="btn-save">Save Deck</button>
-                </div>
-            </form>
+            {% endfor %}
         </div>
 
     {% endif %}
