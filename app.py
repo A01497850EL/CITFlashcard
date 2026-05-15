@@ -1,10 +1,33 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
-from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
+from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction, User
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from peewee import JOIN
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+class AuthUser(UserMixin):
+    def __init__(self, user):
+        self.id = user.id
+        self.username = user.username
+        self._user = user
+
+    def check_password(self, password):
+        return self._user.check_password(password)
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.get_or_none(User.id == int(user_id))
+    return AuthUser(user) if user else None
+
 
 init_db()
 
@@ -18,11 +41,13 @@ def teardown_request(exc):
         db.close()
 
 @app.route("/")
+@login_required
 def index():
     decks = Deck.select()
     return render_template("index.html", decks=decks)
 
 @app.route("/decks")
+@login_required
 def show_decks():
 # Get search query from URL parameters
     search_query = request.args.get("search", "").strip()
@@ -46,6 +71,7 @@ def show_decks():
 
 # creating decks
 @app.route("/decks/create", methods=["POST"])
+@login_required
 def create_deck():
     name = request.form["name"]
     description = request.form.get("description", "")
@@ -62,6 +88,7 @@ def create_deck():
 
 # viewing a deck
 @app.route("/decks/<int:deck_id>")
+@login_required
 def view_deck(deck_id):
     try:
         deck = Deck.get_by_id(deck_id)
@@ -72,6 +99,7 @@ def view_deck(deck_id):
 
 # creating cards
 @app.route("/decks/<int:deck_id>/card/create", methods=["POST"])
+@login_required
 def create_card(deck_id):
     front = request.form["front"]
     back = request.form["back"]
@@ -84,6 +112,7 @@ def create_card(deck_id):
 
 # DELETE DECK
 @app.route("/decks/<int:deck_id>/delete", methods=["POST"])
+@login_required
 def delete_deck(deck_id):
     """
     Deletes a flashcard deck using Peewee ORM
@@ -100,6 +129,7 @@ def delete_deck(deck_id):
     return redirect(url_for("show_decks"))
     
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
+@login_required
 def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
@@ -120,8 +150,54 @@ def delete_card(deck_id, card_id):
 def aboutus():
     return render_template("aboutus.html")
 
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if User.select().count() > 0:
+        flash("Registration is closed.")
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        invite = request.form.get("invite_code")
+        if invite != os.environ.get("INVITE_CODE"):
+            flash("Invalid invite code.")
+            return redirect(url_for("register"))
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = User.create(username=username, password_hash="")
+        user.set_password(password)
+        user.save()
+        flash("Account created. Please log in.")
+        return redirect(url_for("login"))
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = User.get_or_none(User.username == username)
+        if not user:
+            flash("Invalid credentials.")
+            return redirect(url_for("login"))
+        auth_user = AuthUser(user)
+        if not auth_user.check_password(password):
+            flash("Invalid credentials.")
+            return redirect(url_for("login"))
+        login_user(auth_user)
+        return redirect(url_for("index"))
+    return render_template("login.html")
+
+
+@app.route("/logout", methods=["POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
+
 # flashcard write mode
 @app.route("/decks/<int:deck_id>/write")
+@login_required
 def write_mode(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
@@ -149,6 +225,7 @@ def write_mode(deck_id):
 
 # Handle write mode answer
 @app.route("/cards/<int:card_id>/write-answer", methods=["POST"])
+@login_required
 def write_answer(card_id):
     card = Card.get_or_none(Card.id == card_id)
     if not card:
@@ -182,6 +259,7 @@ def write_answer(card_id):
 
 # flashcard flip mode
 @app.route("/decks/<int:deck_id>/flip")
+@login_required
 def flip_mode(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
@@ -208,6 +286,7 @@ def flip_mode(deck_id):
 
 # Handle user answer and update confidence
 @app.route("/cards/<int:card_id>/flip-answer", methods=["POST"])
+@login_required
 def flip_answer(card_id):
     card = Card.get_or_none(Card.id == card_id)
     if not card:
@@ -237,6 +316,7 @@ def flip_answer(card_id):
 
 # UPDATE DECK
 @app.route("/decks/<int:deck_id>/update", methods=["POST"])
+@login_required
 def update_deck(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
