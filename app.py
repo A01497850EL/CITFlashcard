@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
 from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction, CardTagJunction
+from peewee import JOIN
 import os
 
 app = Flask(__name__)
@@ -23,24 +24,50 @@ def index():
 
 @app.route("/decks")
 def show_decks():
-    decks = Deck.select()
+# Get search query from URL parameters
+    search_query = request.args.get("search", "").strip()
+# Default query returns all decks
+    decks = Deck.select().distinct()
+    # If user entered a search query
+    if search_query:
+        # Search decks by deck name OR tag name
+        decks = (
+            Deck
+            .select()
+            .join(DeckTagJunction, JOIN.LEFT_OUTER)
+            .join(Tag, JOIN.LEFT_OUTER)
+            .where(
+                (Deck.name.contains(search_query)) |
+                (Tag.name.contains(search_query))
+            )
+            .distinct()
+        )
     return render_template("decks.html", decks=decks)
 
 # creating decks
-@app.route("/decks/create", methods=["POST"])
+@app.route("/decks/create", methods=["GET", "POST"])
 def create_deck():
-    name = request.form["name"]
-    description = request.form.get("description", "")
-    tags = request.form.get("tags", "")
-    if not name:
-        return "Deck name is required", 400
-    deck=Deck.create(name=name, description=description)
-    for tag_name in tags.split(","):
-        tag_name = tag_name.strip()
-        if tag_name:
-            tag, created = Tag.get_or_create(name=tag_name)
-            DeckTagJunction.create(decks=deck, tags=tag)
-    return redirect(url_for("show_decks"))
+    # If the user clicks "Save Deck" (Submitting the form)
+    if request.method == "POST":
+        name = request.form["name"]
+        description = request.form.get("description", "")
+        tags = request.form.get("tags", "")
+        
+        if not name:
+            return "Deck name is required", 400
+            
+        deck = Deck.create(name=name, description=description)
+        
+        for tag_name in tags.split(","):
+            tag_name = tag_name.strip()
+            if tag_name:
+                tag, created = Tag.get_or_create(name=tag_name)
+                DeckTagJunction.create(decks=deck, tags=tag)
+                
+        return redirect(url_for("show_decks"))
+        
+    # If the user just clicks "Create Deck" in the navbar (Viewing the page)
+    return render_template("createdeck.html")
 
 # viewing a deck
 @app.route("/decks/<int:deck_id>")
@@ -259,6 +286,37 @@ def flip_answer(card_id):
     next_index = request.form.get("index", 0, type=int) + 1
     # Redirect to next card
     return redirect(url_for("flip_mode", deck_id=card.deck.id, index=next_index))
+
+# UPDATE DECK
+@app.route("/decks/<int:deck_id>/update", methods=["POST"])
+def update_deck(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        flash(f"Error: Could not locate deck with id {deck_id}")
+        return redirect(url_for("show_decks"))
+    name = request.form.get("name", "").strip()
+    description = request.form.get("description", "").strip()
+    tags = request.form.get("tags", "")
+    if not name:
+        flash("Deck name is required.")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    
+    deck.name = name
+    deck.description = description
+    deck.save()
+    DeckTagJunction.delete().where(
+        DeckTagJunction.decks == deck
+    ).execute()
+    # Add updated tags
+    for tag_name in tags.split(","):
+        tag_name = tag_name.strip()
+        if tag_name:
+          # Get or create tag
+            tag, created = Tag.get_or_create(name=tag_name)
+            # Create new deck-tag relationship
+            DeckTagJunction.create(decks=deck, tags=tag)
+    flash("Deck updated successfully.")
+    return redirect(url_for("view_deck", deck_id=deck.id))
 
 if __name__ == "__main__":
     app.run(debug=True)
