@@ -184,4 +184,85 @@ class TestCards:
             follow_redirects=True
         )
         assert response.status_code == 200
-             
+        
+ # Tests for write mode functionality
+    def test_write_mode_page_loads(self, test_client, seeded_data):
+        """Testing Write Mode Page Load"""
+        deck, card = seeded_data
+        response = test_client.get(f"/decks/{deck.id}/write")
+        assert response.status_code == 200
+        assert b"What is DNA?" in response.data
+
+    def test_write_mode_correct_answer_increases_confidence(self, test_client, seeded_data):
+        """Testing Write Mode Correct Answer"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/write-answer",
+            data={
+                "answer": "Genetic Material"
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 1
+
+    def test_write_mode_incorrect_answer_decreases_confidence(self, test_client, seeded_data):
+        """Testing Write Mode Incorrect Answer"""
+        deck, card = seeded_data
+        # Set confidence score before decreasing
+        card.confidence_score = 2
+        card.save()
+        response = test_client.post(
+            f"/cards/{card.id}/write-answer",
+            data={
+                "answer": "Wrong Answer"
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 1
+
+    def test_write_mode_confidence_does_not_go_below_zero(self, test_client, seeded_data):
+        """Testing Write Mode Confidence Floor"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/write-answer",
+            data={
+                "answer": "Wrong Answer"
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 0
+    
+    def test_write_mode_case_insensitivity(self, test_client, seeded_data):
+        """Testing Write Mode Case Insensitivity"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/write-answer",
+            data={
+                "answer": "genetic material"
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 1   
+
+    def test_write_mode_override_increases_confidence(self, test_client, seeded_data):
+        """Testing Write Mode Override"""
+        deck, card = seeded_data
+        response = test_client.post(
+            f"/cards/{card.id}/write-answer",
+            data={
+                "answer": "Wrong Answer",
+                "override": "true"
+            },
+            follow_redirects=True
+        )
+        updated_card = Card.get_by_id(card.id)
+        assert response.status_code == 200
+        assert updated_card.confidence_score == 1
