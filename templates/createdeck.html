@@ -9,7 +9,7 @@
         <form action="{{ url_for('create_deck') }}" method="POST">
             <div class="form-group">
                 <label>Deck title</label>
-                <input type="text" name="name" placeholder="Enter deck name..." required class="input-field">
+                <input type="text" name="name" placeholder="Enter deck name..." required class="input-field" maxlength="22">
             </div>
 
             <div class="form-group">
