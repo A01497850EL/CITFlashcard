@@ -128,6 +128,7 @@ def update_card(deck_id, card_id):
     front = request.form.get("front", "").strip()
     back = request.form.get("back", "").strip()
     tags = request.form.get("tags", "").strip()
+    hint = request.form.get("hint", "").strip()
 
     #Validation
     if not front or not back:
@@ -137,6 +138,7 @@ def update_card(deck_id, card_id):
     #save card front/back
     card.front = front
     card.back = back
+    card.hint = hint
     card.save()
 
     #Delete former tag data
