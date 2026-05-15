@@ -1,10 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
-<<<<<<< HEAD
-from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction
-=======
 from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction, CardTagJunction
 from peewee import JOIN
->>>>>>> 43eadcf25c318b93c319451fa731ad469bff5b42
 import os
 
 app = Flask(__name__)
@@ -86,15 +82,6 @@ def view_deck(deck_id):
 # creating cards
 @app.route("/decks/<int:deck_id>/card/create", methods=["POST"])
 def create_card(deck_id):
-<<<<<<< HEAD
-    front = request.form["front"]
-    back = request.form["back"]
-    # Grab the hint from the frontend form
-    hint = request.form.get("hint", "") 
-    
-    # Save the hint to the database
-    Card.create(deck=deck_id, front=front, back=back, hint=hint) 
-=======
     # Save the hint to the database
     front = request.form.get("front", "").strip()
     back = request.form.get("back", "").strip()
@@ -106,7 +93,6 @@ def create_card(deck_id):
         if tag_name:
             tag, created = Tag.get_or_create(name=tag_name)
             CardTagJunction.create(cards=card, tags=tag)
->>>>>>> 43eadcf25c318b93c319451fa731ad469bff5b42
     return redirect(url_for("view_deck", deck_id=deck_id))
 
 # DELETE DECK
