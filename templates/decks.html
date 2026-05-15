@@ -89,24 +89,29 @@
         
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
-        {% else %}
-            <div class="decks-grid">
-                {% for d in decks %}
-                    <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
-                        <h3 class="deck-item-head">{{ d.name }}</h3>
-                        <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
-                        
-                        {% if d.tags %}
-                        <div class="deck-tags">
-                            {% for junction in d.tags %}
-                                <span class="tag-badge">{{ junction.tags.name }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </a>
-                {% endfor %}
-            </div>
         {% endif %}
+
+        <div class="decks-grid">
+            <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
+                <span class="plus-icon">+</span>
+                <h3>Create New Deck</h3>
+            </a>
+
+            {% for d in decks %}
+                <a href="{{ url_for('view_deck', deck_id=d.id) }}" class="deck-item">
+                    <h3 class="deck-item-head">{{ d.name }}</h3>
+                    <p class="deck-item-sub">{{ d.description or "No description provided." }}</p>
+                    
+                    {% if d.tags %}
+                    <div class="deck-tags">
+                        {% for junction in d.tags %}
+                            <span class="tag-badge">{{ junction.tags.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
     {% endif %}
 
 </div>

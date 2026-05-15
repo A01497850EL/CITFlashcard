@@ -1096,6 +1096,51 @@ body {
 
 /* End of Mode Option Buttons */
 
+/* When there are 0 decks button styling */
+.blank-flashcard-link {
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 15px;
+    color: inherit;
+}
+
+/* Card Styling */
+.blank-flashcard {
+    width: 250px;
+    height: 150px;
+    border: 2px dashed #ccc; /* Dashed border */
+    border-radius: 8px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+/* Lift hover effect */
+.blank-flashcard:hover {
+    border-color: #666;
+    background-color: #f0f0f0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.blank-flashcard .plus-icon {
+    font-size: 40px;
+    color: #999;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.blank-flashcard h3 {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+/* End of 0 Decks Button Styling */
+
 /* Mobile responsiveness: stack to 1 column on small screens */
 @media (max-width: 768px) {
   .about-values-grid {
