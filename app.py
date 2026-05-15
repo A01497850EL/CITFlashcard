@@ -112,6 +112,45 @@ def delete_deck(deck_id):
     # Redirect back to decks page
     return redirect(url_for("show_decks"))
     
+# Update Flashcard
+@app.route("/decks/<int:deck_id>/card/<int:card_id>/update", methods=["POST"])
+def update_card(deck_id, card_id):
+    """
+    Updates a card's information via a card's id
+    """
+    #Get Card via ID with validation
+    card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
+    #Validation
+    if not card:
+        flash(f"Error: Could not locate card with {card_id}")
+        return redirect(url_for("show_decks"))
+    #get data
+    front = request.form.get("front", "").strip()
+    back = request.form.get("back", "").strip()
+    tags = request.form.get("tags", "").strip()
+
+    #Validation
+    if not front or not back:
+        flash("Error: Please enter valid front and backsides for flashcards.")
+        return redirect(url_for("view_deck", deck_id=deck_id))
+    
+    #save card front/back
+    card.front = front
+    card.back = back
+    card.save()
+
+    #Delete former tag data
+    CardTagJunction.delete().where(CardTagJunction.cards == card).execute()
+
+    #Recreate tags
+    for tag_name in tags.split(","):
+        tag_name = tag_name.strip()
+        if tag_name:
+            tag, created = Tag.get_or_create(name=tag_name)
+            CardTagJunction.create(cards=card, tags=tag)
+
+    return redirect(url_for("view_deck", deck_id=deck_id))
+
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
 def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
