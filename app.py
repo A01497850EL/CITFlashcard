@@ -27,20 +27,29 @@ def show_decks():
     return render_template("decks.html", decks=decks)
 
 # creating decks
-@app.route("/decks/create", methods=["POST"])
+@app.route("/decks/create", methods=["GET", "POST"])
 def create_deck():
-    name = request.form["name"]
-    description = request.form.get("description", "")
-    tags = request.form.get("tags", "")
-    if not name:
-        return "Deck name is required", 400
-    deck=Deck.create(name=name, description=description)
-    for tag_name in tags.split(","):
-        tag_name = tag_name.strip()
-        if tag_name:
-            tag, created = Tag.get_or_create(name=tag_name)
-            DeckTagJunction.create(decks=deck, tags=tag)
-    return redirect(url_for("show_decks"))
+    # If the user clicks "Save Deck" (Submitting the form)
+    if request.method == "POST":
+        name = request.form["name"]
+        description = request.form.get("description", "")
+        tags = request.form.get("tags", "")
+        
+        if not name:
+            return "Deck name is required", 400
+            
+        deck = Deck.create(name=name, description=description)
+        
+        for tag_name in tags.split(","):
+            tag_name = tag_name.strip()
+            if tag_name:
+                tag, created = Tag.get_or_create(name=tag_name)
+                DeckTagJunction.create(decks=deck, tags=tag)
+                
+        return redirect(url_for("show_decks"))
+        
+    # If the user just clicks "Create Deck" in the navbar (Viewing the page)
+    return render_template("createdeck.html")
 
 # viewing a deck
 @app.route("/decks/<int:deck_id>")
