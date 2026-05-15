@@ -43,4 +43,38 @@
     </div>
 </section>
 
+<!-- Features Section -->
+<div class="features-section">
+    <h2 class="section-title">How Flashy Works</h2>
+    <p class="section-subtitle">Study smarter, not longer, with tools built for actual retention.</p>
+    
+    <div class="features-grid">
+        
+        <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3>Two Ways to Study</h3>
+            <p>Choose <strong>Flip Mode</strong> for regular, rapid-fire flashcard review, or switch to <strong>Written Mode</strong> (quiz mode) to physically type in your answers and test your exact spelling and memory.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h3>Confidence Algorithm</h3>
+            <p>Learn exponentially faster. Our smart algorithm tracks your answers: cards you struggle with will appear more frequently, while the ones you easily guess are pushed to the back to save you time.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📁</div>
+            <h3>Create & Organize</h3>
+            <p>Build custom decks in seconds. Add descriptions, helpful hints, and custom tags to keep all your classes and subjects perfectly organized and searchable.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+    <h2>Ready to ace your next exam?</h2>
+    <p>Stop re-reading notes and start actively recalling information today.</p>
+    <a href="{{ url_for('show_decks') }}#create-deck" class="cta-button">Create Your First Deck</a>
+</div>
+
 {% endblock %}
