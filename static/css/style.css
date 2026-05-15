@@ -180,6 +180,118 @@ body {
 
 /* END OF RECENT DECKS */
 
+/* Features Section on Landing Page */
+.features-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #6b7280;
+    margin-bottom: 50px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.features-grid {
+    display: grid;
+    /* Makes the columns a bit wider to handle the detailed text */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: #f9fafb;
+    padding: 40px 30px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: left; 
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    border-color: #d1d5db;
+}
+
+.feature-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: inline-block;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.feature-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 22px;
+    color: #111827;
+}
+
+.feature-card p {
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 16px;
+}
+
+/* End Of Features Section */
+
+/* CTA Banner on Landing Page */
+.cta-banner {
+    background: #111827;
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+    max-width: 1000px;
+    margin: 40px auto;
+    border-radius: 24px;
+}
+
+.cta-banner h2 { 
+    font-size: 36px; 
+    margin: 0 0 15px 0; 
+}
+
+.cta-banner p { 
+    font-size: 18px; 
+    color: #9ca3af;
+    margin: 0 0 30px 0; 
+}
+
+.cta-button {
+    display: inline-block;
+    background: white;
+    color: #111827;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.cta-button:hover { 
+    transform: scale(1.05);
+}
+
+/* End of CTA Banner on Landing Page */
+
 /* Footer */
 
 .site-footer {
@@ -557,6 +669,7 @@ body {
     border-radius: 16px;
     padding: 30px;
     margin-top: 40px;
+    margin-bottom: 40px;
     background-color: #fafafa;
     transition: border-color 0.3s ease;
 }
@@ -605,6 +718,45 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-top: 20px;
+}
+
+/* Container to keep everything on one line */
+.btn-options, .study-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Shared styling for links and buttons */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Sizing & Shape */
+    padding: 8px 16px;
+    height: 38px; /* Fixed height ensures they match perfectly */
+    min-width: 110px;
+    border-radius: 6px;
+    
+    /* Typography */
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    
+    /* Default Colors */
+    /* background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease; */
+}
+
+/* Reset form margins to prevent alignment shifts */
+.btn-options form {
+    margin: 0;
+    display: flex;
 }
 
 /* Modifies the existing .page-title margin specifically for the single deck view */
@@ -761,7 +913,7 @@ body {
     z-index: 10;
     width: 100%;
     max-width: 600px;
-    height: 400px;
+    height: 350px;
     perspective: 1200px;
 }
 
@@ -794,7 +946,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px;
+    padding: 48px 12px 8px;
     box-sizing: border-box;
     text-align: center;
 }
@@ -828,7 +980,7 @@ body {
 /* --- HINT SECTION STYLES --- */
 .flashy-hint-container {
     margin-top: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .flashy-hint-btn {
@@ -1095,6 +1247,219 @@ body {
 }
 
 /* End of Mode Option Buttons */
+
+/* When there are 0 decks button styling */
+.blank-flashcard-link {
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 15px;
+    color: inherit;
+}
+
+/* Card Styling */
+.blank-flashcard {
+    width: 250px;
+    height: 150px;
+    border: 2px dashed #ccc; /* Dashed border */
+    border-radius: 8px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+/* Lift hover effect */
+.blank-flashcard:hover {
+    border-color: #666;
+    background-color: #f0f0f0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.blank-flashcard .plus-icon {
+    font-size: 40px;
+    color: #999;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.blank-flashcard h3 {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+/* End of 0 Decks Button Styling */
+/* write mode*/
+
+.background {
+    background-image: url('../images/flashcard_background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* This makes it feel full-screen like the flip side */
+    background-repeat: no-repeat;
+    display: flex;
+  
+
+}
+
+.study-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 60px auto; /* '60px' for top/bottom, 'auto' for left/right */
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.written-card {
+    background-color: #ffffff; /* Explicitly white */
+    border: 1px solid #e5e7eb; /* Light but visible border */
+    padding-bottom: 30px;
+    border-radius: 32px;
+    padding: 60px 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Softer, deeper shadow */
+    margin-bottom: 24px;
+}
+
+.prompt-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.question-text {
+    font-size: 32px;
+    font-weight: 700;
+            margin: 0;
+}
+
+.input-wrapper {
+            position: relative;
+            margin-top: 30px;
+            border: 1px solid black;
+            border-radius: 12px;
+}
+
+.answer-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+}
+
+.answer-input:focus {
+    border-color: var(--accent-blue);
+}
+
+.controls {
+    display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 12px;
+        }
+
+/* Base button styles to ensure they are visible and solid */
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-family: inherit;
+    font-size: 14px;
+    transition: background-color 0.2s, transform 0.1s;
+    opacity: 1 !important; 
+}
+
+/* Specifically for the Check Answer button */
+.btn-primary {
+    background-color: #4A90E2; 
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #357ABD; 
+    filter: none; 
+}
+
+.btn-prev {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.btn-prev:hover {
+    background-color: #e5e7eb;
+}
+
+/* This makes the disabled div look like the button */
+.btn-prev-disabled {
+    background-color: #f3f4f6; 
+    color: #9ca3af;            /* Lighter grey text to look "off" */
+    cursor: not-allowed;       /* Changes mouse to a 'stop' sign */
+    opacity: 0.6;              /* Makes it look faded */
+}
+
+.btn-skip {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.btn-skip:hover {
+    background-color: #e5e7eb;
+}
+
+.hidden {
+    display: none;
+}
+#feedback-area {
+    margin-top: 40px; /* Pushes the box away from the 3+3 text */
+}
+
+.feedback-box {
+    padding: 30px;
+    border-radius: 12px; /* Matches your card's rounded corners */
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* green for Success */
+.feedback-right {
+    background-color: #e6f4ea; 
+    color: #1e7e34;
+    border: 1px solid #ceead6;
+}
+
+/* Red for Mistakes */
+.feedback-wrong {
+    background-color: #fce8e6;
+    color: #c5221f;
+    border: 1px solid #fad2cf;
+}
+
+.feedback-box p {
+    margin: 8px 0; /* Adds space between "Your Answer" and "Correct Answer" */
+}
+
+#your-answer-display {
+    color: #5f6368;
+    text-decoration: line-through;
+}
 
 /* Mobile responsiveness: stack to 1 column on small screens */
 @media (max-width: 768px) {
