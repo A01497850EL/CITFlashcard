@@ -45,7 +45,7 @@ def seeded_data():
 
 @pytest.fixture(autouse=True)
 def clear_db(test_db):
-    "Clears DB after each test"
+    """Clears DB before each test"""
     Card.delete().execute()
     Deck.delete().execute()
     Tag.delete().execute()
