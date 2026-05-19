@@ -43,7 +43,7 @@ def teardown_request(exc):
 @app.route("/")
 @login_required
 def index():
-    decks = Deck.select()
+    decks = Deck.select().where(Deck.owner == current_user.id)
     return render_template("index.html", decks=decks)
 
 @app.route("/decks")
@@ -235,9 +235,11 @@ def aboutus():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    '''
     if User.select().count() > 0:
         flash("Registration is closed.")
         return redirect(url_for("login"))
+    '''
     if request.method == "POST":
         invite = request.form.get("invite_code")
         if invite != os.environ.get("INVITE_CODE"):
