@@ -35,12 +35,19 @@ def test_client(test_db):
     with flask_app_instance.test_client() as testing_client:
         yield testing_client
 
-@pytest.fixture(scope='function')
-def seeded_data(test_db):
-    """Cleans tables and seeds fresh data for each test."""
-    Card.delete().execute()
-    Deck.delete().execute()
+@pytest.fixture()
+def seeded_data():
+    """Provides fresh sample data for test."""
     
     deck = Deck.create(name="Biology", description="notes for midterm")
     card = Card.create(deck=deck, front="What is DNA?", back="Genetic material")
     return deck, card
+
+@pytest.fixture(autouse=True)
+def clear_db(test_db):
+    """Clears DB before each test"""
+    Card.delete().execute()
+    Deck.delete().execute()
+    Tag.delete().execute()
+    CardTagJunction.delete().execute()
+    DeckTagJunction.delete().execute()

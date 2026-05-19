@@ -3,6 +3,13 @@
 {% block content %}
 
 <div class="background">
+
+    <div class="back-to-decks">
+        <a href="{{ url_for('show_decks') }}" class="deck-nav-back">&larr; 
+            Back to all decks
+        </a>
+    </div>
+
 <section class="study-container">
      <div class="flashy-flip-header">
         <h2 class="flashy-flip-deck-name">{{ deck.name }}</h2>

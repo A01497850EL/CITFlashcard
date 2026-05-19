@@ -2,7 +2,13 @@
 
 {% block content %}
 <div class="flashy-flip-wrapper">
-    
+
+    <div class="back-to-decks">
+    <a href="{{ url_for('show_decks') }}" class="deck-nav-back">&larr; 
+        Back to all decks
+    </a>
+    </div>
+
     <div class="flashy-flip-header">
         <h2 class="flashy-flip-deck-name">{{ deck.name }}</h2>
         <div class="flashy-flip-progress-text">CARD {{ index + 1 }} OF {{ total_cards }}</div>

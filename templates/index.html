@@ -8,7 +8,7 @@
     <p>Create and Study Your Flashcards</p>
     
     <div class="hero-buttons">
-        <a href="{{ url_for('show_decks') }}#create-deck" class="btn-create">Create Deck</a>
+        <a href="{{ url_for('create_deck') }}" class="btn-create">Create Deck</a>
         <a href="{{ url_for('show_decks') }}" class="btn-view">View Decks</a>
     </div>
 </section> 
@@ -74,7 +74,7 @@
 <div class="cta-banner">
     <h2>Ready to ace your next exam?</h2>
     <p>Stop re-reading notes and start actively recalling information today.</p>
-    <a href="{{ url_for('show_decks') }}#create-deck" class="cta-button">Create Your First Deck</a>
+    <a href="{{ url_for('create_deck') }}" class="cta-button">Create Your First Deck</a>
 </div>
 
 {% endblock %}
