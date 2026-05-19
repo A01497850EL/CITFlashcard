@@ -52,7 +52,7 @@ def show_decks():
 # Get search query from URL parameters
     search_query = request.args.get("search", "").strip()
 # Default query returns all decks
-    decks = Deck.select(Deck.owner == current_user.id).distinct()
+    decks = Deck.select().where(Deck.owner == current_user.id).distinct()
     # If user entered a search query
     if search_query:
         # Search decks by deck name OR tag name
@@ -105,7 +105,10 @@ def view_deck(deck_id):
         deck = Deck.get_by_id(deck_id)
     except Deck.DoesNotExist:
         abort(404)
-    cards = Card.select().where(Card.deck == deck_id & Deck.owner == current_user.id)
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
+        return redirect(url_for("show_decks"))
+    cards = Card.select().where(Card.deck == deck_id)
     return render_template("decks.html", deck=deck, cards=cards)
 
 # creating cards
@@ -116,7 +119,7 @@ def create_card(deck_id):
     if not deck:
         flash("Error: Deck not found")
         return redirect(url_for("show_decks"))
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     
@@ -145,7 +148,7 @@ def delete_deck(deck_id):
         deck = Deck.get_by_id(deck_id)
 
         # Verify Ownership
-        if deck.owner != current_user.id:
+        if deck.owner_id != current_user.id:
             flash("The deck you are attempting to access does not belong to you.")
             return redirect(url_for("show_decks"))
 
@@ -170,7 +173,7 @@ def update_card(deck_id, card_id):
         flash(f"Error: Could not locate card with {card_id}")
         return redirect(url_for("show_decks"))
     deck = card.deck
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     #get data
@@ -211,7 +214,7 @@ def delete_card(deck_id, card_id):
         return redirect(url_for("view_deck", deck_id=deck_id))
     
     # Verify Ownership
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     
@@ -284,7 +287,7 @@ def write_mode(deck_id):
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
         return redirect(url_for("show_decks"))
     # Verify Ownership
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     # Get all cards in sequential order
@@ -317,7 +320,7 @@ def write_answer(card_id):
         return redirect(url_for("show_decks"))
     # Verify Ownership
     deck = card.deck
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     # Get user's typed answer
@@ -354,7 +357,7 @@ def flip_mode(deck_id):
         # If deck does not exist, show error and redirect
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
         return redirect(url_for("show_decks"))
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     cards = Card.select().where(Card.deck == deck).order_by(Card.id)
@@ -384,7 +387,7 @@ def flip_answer(card_id):
         flash(f"Error: Could not locate flashcard with provided card id {card_id}")
         return redirect(url_for("show_decks"))
     deck = card.deck
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     # Get result from form 
@@ -416,7 +419,7 @@ def update_deck(deck_id):
     if not deck:
         flash(f"Error: Could not locate deck with id {deck_id}")
         return redirect(url_for("show_decks"))
-    if deck.owner != current_user.id:
+    if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     name = request.form.get("name", "").strip()
