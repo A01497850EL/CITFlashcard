@@ -11,10 +11,21 @@ class BaseModel(Model):
 class Tag(BaseModel):
     name = CharField()
 
+class User(BaseModel):
+    username = CharField(unique=True)
+    password_hash = CharField()
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 class Deck(BaseModel):
     name = CharField()
     description = CharField(null=True)
     created_at = DateTimeField(default=datetime.now)
+    owner = ForeignKeyField(User, backref='decks', null=True)
 
 class DeckTagJunction(BaseModel):
     decks = ForeignKeyField(Deck, backref='tags', on_delete='CASCADE')
@@ -32,15 +43,7 @@ class CardTagJunction(BaseModel):
     cards = ForeignKeyField(Card, backref='card_link', on_delete='CASCADE')
     tags = ForeignKeyField(Tag, backref='decks', on_delete='CASCADE')
 
-class User(BaseModel):
-    username = CharField(unique=True)
-    password_hash = CharField()
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
 
 
