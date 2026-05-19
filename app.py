@@ -446,7 +446,7 @@ def update_deck(deck_id):
             # Create new deck-tag relationship
             DeckTagJunction.create(decks=deck, tags=tag)
     flash("Deck updated successfully.")
-    return redirect(url_for("view_deck", deck_id=deck.id))
+    return redirect(url_for("show_decks", deck_id=deck.id))
 
 if __name__ == "__main__":
     app.run(debug=True)
