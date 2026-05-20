@@ -1,5 +1,5 @@
 import pytest
-from init_db import Deck, Card, Tag, DeckTagJunction
+from init_db import Deck, Card, Tag, DeckTagJunction, User
 
 class TestDecks:
     def test_create_deck(self, test_client):
@@ -90,9 +90,10 @@ class TestCards:
  # Tests for Search Functionality
     def test_search_deck_by_name(self, test_client):
         """Testing Deck Search by Deck Name"""
+        user = User.get(User.username == "testuser")
         # Create test decks
-        Deck.create(name="OOP", description="Object Oriented Programming")
-        Deck.create(name="Linux", description="Linux Administration")
+        Deck.create(name="OOP", description="Object Oriented Programming", owner=user)
+        Deck.create(name="Linux", description="Linux Administration", owner=user)
         # Search for OOP deck
         response = test_client.get("/decks?search=OOP")
         assert response.status_code == 200
@@ -101,9 +102,10 @@ class TestCards:
 
     def test_search_deck_by_tag(self, test_client):
         """Testing Deck Search by Tag Name"""
+        user = User.get(User.username == "testuser")
         # Create test decks
-        oop_deck = Deck.create(name="OOP", description="Object Oriented Programming")
-        linux_deck = Deck.create(name="Linux", description="Linux Administration")
+        oop_deck = Deck.create(name="OOP", description="Object Oriented Programming", owner=user)
+        linux_deck = Deck.create(name="Linux", description="Linux Administration", owner=user)
         # Create tags
         java_tag = Tag.create(name="java")
         linux_tag = Tag.create(name="ubuntu")

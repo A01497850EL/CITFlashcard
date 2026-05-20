@@ -1,11 +1,34 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, flash
-from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction, CardTagJunction
+from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction, User, CardTagJunction
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from peewee import JOIN
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
-#hi
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+class AuthUser(UserMixin):
+    def __init__(self, user):
+        self.id = user.id
+        self.username = user.username
+        self._user = user
+
+    def check_password(self, password):
+        return self._user.check_password(password)
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.get_or_none(User.id == int(user_id))
+    return AuthUser(user) if user else None
+
+
 init_db()
 
 @app.before_request
@@ -18,16 +41,18 @@ def teardown_request(exc):
         db.close()
 
 @app.route("/")
+@login_required
 def index():
-    decks = Deck.select()
+    decks = Deck.select().where(Deck.owner == current_user.id)
     return render_template("index.html", decks=decks)
 
 @app.route("/decks")
+@login_required
 def show_decks():
 # Get search query from URL parameters
     search_query = request.args.get("search", "").strip()
 # Default query returns all decks
-    decks = Deck.select().distinct()
+    decks = Deck.select().where(Deck.owner == current_user.id).distinct()
     # If user entered a search query
     if search_query:
         # Search decks by deck name OR tag name
@@ -37,8 +62,11 @@ def show_decks():
             .join(DeckTagJunction, JOIN.LEFT_OUTER)
             .join(Tag, JOIN.LEFT_OUTER)
             .where(
-                (Deck.name.contains(search_query)) |
-                (Tag.name.contains(search_query))
+                (Deck.owner == current_user.id) &
+                (
+                    (Deck.name.contains(search_query)) |
+                    (Tag.name.contains(search_query)) 
+                )
             )
             .distinct()
         )
@@ -46,6 +74,7 @@ def show_decks():
 
 # creating decks
 @app.route("/decks/create", methods=["GET", "POST"])
+@login_required
 def create_deck():
     # If the user clicks "Save Deck" (Submitting the form)
     if request.method == "POST":
@@ -56,7 +85,7 @@ def create_deck():
         if not name:
             return "Deck name is required", 400
             
-        deck = Deck.create(name=name, description=description)
+        deck = Deck.create(name=name, description=description, owner=current_user.id)
         
         for tag_name in tags.split(","):
             tag_name = tag_name.strip()
@@ -71,17 +100,30 @@ def create_deck():
 
 # viewing a deck
 @app.route("/decks/<int:deck_id>")
+@login_required
 def view_deck(deck_id):
     try:
         deck = Deck.get_by_id(deck_id)
     except Deck.DoesNotExist:
         abort(404)
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
+        return redirect(url_for("show_decks"))
     cards = Card.select().where(Card.deck == deck_id)
     return render_template("decks.html", deck=deck, cards=cards)
 
 # creating cards
 @app.route("/decks/<int:deck_id>/card/create", methods=["POST"])
+@login_required
 def create_card(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    if not deck:
+        flash("Error: Deck not found")
+        return redirect(url_for("show_decks"))
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
+        return redirect(url_for("show_decks"))
+    
     # Save the hint to the database
     front = request.form.get("front", "").strip()
     back = request.form.get("back", "").strip()
@@ -97,6 +139,7 @@ def create_card(deck_id):
 
 # DELETE DECK
 @app.route("/decks/<int:deck_id>/delete", methods=["POST"])
+@login_required
 def delete_deck(deck_id):
     """
     Deletes a flashcard deck using Peewee ORM
@@ -104,6 +147,12 @@ def delete_deck(deck_id):
     try:
         # Get the deck
         deck = Deck.get_by_id(deck_id)
+
+        # Verify Ownership
+        if deck.owner_id != current_user.id:
+            flash("The deck you are attempting to access does not belong to you.")
+            return redirect(url_for("show_decks"))
+
         # Delete deck + related cards
         deck.delete_instance(recursive=True)
         flash("Deck deleted successfully.")
@@ -114,6 +163,7 @@ def delete_deck(deck_id):
     
 # Update Flashcard
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/update", methods=["POST"])
+@login_required
 def update_card(deck_id, card_id):
     """
     Updates a card's information via a card's id
@@ -123,6 +173,10 @@ def update_card(deck_id, card_id):
     #Validation
     if not card:
         flash(f"Error: Could not locate card with {card_id}")
+        return redirect(url_for("show_decks"))
+    deck = card.deck
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     #get data
     front = request.form.get("front", "").strip()
@@ -154,11 +208,17 @@ def update_card(deck_id, card_id):
     return redirect(url_for("view_deck", deck_id=deck_id))
 
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/delete", methods=["POST"])
+@login_required
 def delete_card(deck_id, card_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
         return redirect(url_for("view_deck", deck_id=deck_id))
+    
+    # Verify Ownership
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
+        return redirect(url_for("show_decks"))
     
     card = Card.get_or_none((Card.id == card_id) & (Card.deck == deck_id))
     if not card: 
@@ -166,7 +226,7 @@ def delete_card(deck_id, card_id):
         return redirect(url_for("view_deck", deck_id=deck_id))
         
     card.delete_instance()
-    flash(f"Card {card_id} deleted successsfully.")
+    flash(f"Card {card_id} deleted successfully.")
     return redirect(url_for("view_deck", deck_id=deck_id))
 
 # Route to About Us page
@@ -174,13 +234,65 @@ def delete_card(deck_id, card_id):
 def aboutus():
     return render_template("aboutus.html")
 
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    '''
+    if User.select().count() > 0:
+        flash("Registration is closed.")
+        return redirect(url_for("login"))
+    '''
+    if request.method == "POST":
+        invite = request.form.get("invite_code")
+        if invite != os.environ.get("INVITE_CODE"):
+            flash("Invalid invite code.")
+            return redirect(url_for("register"))
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = User.create(username=username, password_hash="")
+        user.set_password(password)
+        user.save()
+        flash("Account created. Please log in.")
+        return redirect(url_for("login"))
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = User.get_or_none(User.username == username)
+        if not user:
+            flash("Invalid credentials.")
+            return redirect(url_for("login"))
+        auth_user = AuthUser(user)
+        if not auth_user.check_password(password):
+            flash("Invalid credentials.")
+            return redirect(url_for("login"))
+        login_user(auth_user)
+        return redirect(url_for("index"))
+    return render_template("login.html")
+
+
+@app.route("/logout", methods=["POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
+
 # flashcard write mode
 @app.route("/decks/<int:deck_id>/write")
+@login_required
 def write_mode(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         # If deck does not exist, show error and redirect
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
+        return redirect(url_for("show_decks"))
+    # Verify Ownership
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     # Get all cards in sequential order
     cards = Card.select().where(Card.deck == deck).order_by(Card.id)
@@ -203,11 +315,17 @@ def write_mode(deck_id):
 
 # Handle write mode answer
 @app.route("/cards/<int:card_id>/write-answer", methods=["POST"])
+@login_required
 def write_answer(card_id):
     card = Card.get_or_none(Card.id == card_id)
     if not card:
         # If card not found
         flash(f"Error: Could not locate flashcard with provided card id {card_id}")
+        return redirect(url_for("show_decks"))
+    # Verify Ownership
+    deck = card.deck
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     # Get user's typed answer
     user_answer = request.form.get("answer", "").strip().lower()
@@ -232,17 +350,20 @@ def write_answer(card_id):
             card.mastered = False
     card.save()
     next_index = request.form.get("index", 0, type=int) + 1
-    return redirect(url_for("write_mode", deck_id=card.deck.id, index=next_index))
+    return redirect(url_for("write_mode", deck_id=deck.id, index=next_index))
 
 # flashcard flip mode
 @app.route("/decks/<int:deck_id>/flip")
+@login_required
 def flip_mode(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         # If deck does not exist, show error and redirect
         flash(f"Error: Could not locate deck with provided deck id {deck_id}")
         return redirect(url_for("show_decks"))
-    
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
+        return redirect(url_for("show_decks"))
     cards = Card.select().where(Card.deck == deck).order_by(Card.id)
     cards_list = list(cards)
     if not cards_list:
@@ -262,11 +383,16 @@ def flip_mode(deck_id):
 
 # Handle user answer and update confidence
 @app.route("/cards/<int:card_id>/flip-answer", methods=["POST"])
+@login_required
 def flip_answer(card_id):
     card = Card.get_or_none(Card.id == card_id)
     if not card:
         # If card not found
         flash(f"Error: Could not locate flashcard with provided card id {card_id}")
+        return redirect(url_for("show_decks"))
+    deck = card.deck
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     # Get result from form 
     result = request.form.get("result")
@@ -287,14 +413,18 @@ def flip_answer(card_id):
     card.save()
     next_index = request.form.get("index", 0, type=int) + 1
     # Redirect to next card
-    return redirect(url_for("flip_mode", deck_id=card.deck.id, index=next_index))
+    return redirect(url_for("flip_mode", deck_id=deck.id, index=next_index))
 
 # UPDATE DECK
 @app.route("/decks/<int:deck_id>/update", methods=["POST"])
+@login_required
 def update_deck(deck_id):
     deck = Deck.get_or_none(Deck.id == deck_id)
     if not deck:
         flash(f"Error: Could not locate deck with id {deck_id}")
+        return redirect(url_for("show_decks"))
+    if deck.owner_id != current_user.id:
+        flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
     name = request.form.get("name", "").strip()
     description = request.form.get("description", "").strip()
@@ -318,7 +448,7 @@ def update_deck(deck_id):
             # Create new deck-tag relationship
             DeckTagJunction.create(decks=deck, tags=tag)
     flash("Deck updated successfully.")
-    return redirect(url_for("view_deck", deck_id=deck.id))
+    return redirect(url_for("show_decks", deck_id=deck.id))
 
 if __name__ == "__main__":
     app.run(debug=True)
