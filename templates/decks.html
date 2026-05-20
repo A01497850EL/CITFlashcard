@@ -146,6 +146,10 @@
     {% else %}
         <h1 class="page-title">Your Decks</h1>
         
+        <div class="deck-search-container">
+            <input type="text" id="deckSearch" placeholder="Search decks by name, description, or tags..." class="input-field">
+        </div>
+
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
         {% endif %}

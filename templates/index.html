@@ -25,11 +25,13 @@
                         
                         {% if deck.description %}
                             <p class="home-deck-desc">{{ deck.description }}</p>
+                        {% else %}
+                            <p class="home-deck-desc">No description provided.</p>
                         {% endif %}
 
                         <div class="home-deck-tags">
                             {% for junction in deck.tags %}
-                                <span class="home-tag-badge">{{ junction.tags.name }}</span>
+                                <span class="tag-badge" data-tag="{{ junction.tags.name|lower }}">{{ junction.tags.name }}</span>
                             {% endfor %}
                         </div>
                     </div>
