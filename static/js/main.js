@@ -40,9 +40,9 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 });
 
-// ==========================================
+
 // 2. DECK SEARCH & TAG FILTER FUNCTIONALITY AND TAG COLORS
-// ==========================================
+
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById('deckSearch');
     
@@ -53,19 +53,19 @@ document.addEventListener("DOMContentLoaded", function() {
             const text = badge.textContent.trim().toLowerCase();
             if (!text) return;
 
-            // Generate a simple hash value from the text 
+             
             let hash = 0;
             for (let i = 0; i < text.length; i++) {
                 hash = text.charCodeAt(i) + ((hash << 5) - hash);
             }
 
-            // Convert hash to a readable color 
+             
             const hue = Math.abs(hash) % 360;
             const saturation = 70; 
             const lightness = 85;  
             const textColor = lightness > 60 ? '#111111' : '#ffffff';
 
-            // Apply directly to the element's style property
+            
             badge.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
             badge.style.color = textColor;
             badge.style.border = 'none';
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // If there's no search bar on this page (like index.html), stop here
     if (!searchInput) return;
 
-    // Core filtering logic helper (Main grid page only)
+    
     function filterDecks(searchTerm) {
         const deckContainers = document.querySelectorAll('.decks-grid > .flashy-relative-container');
 
@@ -101,13 +101,13 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Listen for typing in the search bar
+   
     searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase().trim();
         filterDecks(searchTerm);
     });
 
-    // Listen for clicks on the tag badges (Main Grid View only)
+    
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('search-tag')) {
             e.preventDefault();
