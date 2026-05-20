@@ -83,7 +83,8 @@ def create_deck():
         tags = request.form.get("tags", "")
         
         if not name:
-            return "Deck name is required", 400
+            flash("Deck name is required.")
+            return redirect(url_for("create_deck"))
             
         deck = Deck.create(name=name, description=description, owner=current_user.id)
         
