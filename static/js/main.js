@@ -40,11 +40,9 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 });
 
-
-
-
+// ==========================================
 // 2. DECK SEARCH & TAG FILTER FUNCTIONALITY AND TAG COLORS
-
+// ==========================================
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById('deckSearch');
     
@@ -74,10 +72,13 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    
+    // Run the coloring logic immediately so it applies to ALL pages
     applyDynamicTagColors();
 
-   
+    // If there's no search bar on this page (like index.html), stop here
+    if (!searchInput) return;
+
+    // Core filtering logic helper (Main grid page only)
     function filterDecks(searchTerm) {
         const deckContainers = document.querySelectorAll('.decks-grid > .flashy-relative-container');
 
@@ -100,35 +101,13 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const filterParam = urlParams.get('filterTag');
-    if (filterParam && searchInput) {
-        searchInput.value = filterParam;
-        filterDecks(filterParam);
-    }
-
-    // If searchInput doesn't exist, we are inside a deck page
-    if (!searchInput) {
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('search-tag')) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const clickedTag = e.target.getAttribute('data-tag') || e.target.textContent.toLowerCase().trim();
-                window.location.href = "/decks?filterTag=" + encodeURIComponent(clickedTag);
-            }
-        });
-        return;
-    }
-
-    // 1. Listen for typing in the search bar
+    // Listen for typing in the search bar
     searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase().trim();
         filterDecks(searchTerm);
     });
 
-    // 2. Listen for clicks on the tag badges (Main Grid View)
+    // Listen for clicks on the tag badges (Main Grid View only)
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('search-tag')) {
             e.preventDefault();
