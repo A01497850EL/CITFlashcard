@@ -41,25 +41,13 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-
     
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
 
-    // checks to see if the toggle switch actually exists on the page
     if (toggleSwitch) {
-
-        // Check to see if they were already in Dark Mode
-        const currentTheme = localStorage.getItem('theme');
-
-        if (currentTheme) {
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            // If they chose dark mode, flip the switch to on
-            if (currentTheme === 'dark') {
-                toggleSwitch.checked = true;
-            }
-        }
-
-        // If user the user toggles the switch
+        // We removed the setup logic here, because the inline HTML scripts handled it!
+        
+        // Listen for when the user clicks the switch
         toggleSwitch.addEventListener('change', function(e) {
             if (e.target.checked) {
                 // Switch flipped ON -> Turn on Dark Mode and save to memory
