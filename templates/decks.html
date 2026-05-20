@@ -29,6 +29,10 @@
                     Write Mode
                 </a>
 
+                <a href="{{ url_for('export_deck', deck_id=deck.id) }}" class="flashy-btn-study flashy-btn-flip">
+                    Export Deck
+                </a>
+
                 <form action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this entire deck?');">
                     <button type="submit" class="btn-delete">Delete Deck</button>
                 </form>
@@ -145,7 +149,13 @@
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
         {% endif %}
-        
+
+        <div class="import-btn-wrapper">
+            <a href="{{ url_for('import_deck') }}" class="flashy-btn-study flashy-btn-flip">
+             Import Deck
+            </a>
+        </div>
+
         <div class="decks-grid">
             <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
                 <span class="plus-icon">+</span>

@@ -1616,6 +1616,43 @@ body {
     text-decoration: line-through;
 }
 
+.import-btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.upload-click-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.upload-icon-img {
+    width: 90px;
+    height: auto;
+    margin-bottom: 18px;
+    transition: 0.2s ease;
+}
+
+.upload-click-area:hover .upload-icon-img {
+    transform: translateY(-4px);
+}
+.custom-file-upload {
+    background-color: #4D7CFE;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #3b68e8;
+}
+
 /* Mobile responsiveness: stack to 1 column on small screens */
 @media (max-width: 768px) {
   .about-values-grid {
