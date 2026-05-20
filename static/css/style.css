@@ -7,6 +7,7 @@
   --light-gray: #999999;
   --gray: #666666;
   --dark-gray: #222222;
+  --solid-black: #000000;
   --black: #000000;
   --light-blue: #e6f0ff;
   --blue: #0055ff;
@@ -27,15 +28,13 @@
   --light-gray: #a0a0a0;
   --gray: #cccccc;
   --dark-gray: #f8f9fa;
+  --solid-black: #000000;
   --black: #ffffff;
   --light-blue: #002266;
   --blue: #3377ff;
   --light-red: #4a0000;
   --light-green: #003311;
-}
-[data-theme="dark"] .logo img {
-    mix-blend-mode: normal;
-    background-color: #ffffff;
+  --gold-yellow: #FFD700;
 }
 
 /* Global Styles */
@@ -49,21 +48,34 @@ body {
 
 /* Hero Section */
 .hero-section {
-    background-image: url("../images/flashcard_background.png");
+    background-image: url("../images/flashcard_background_light.png");
     text-align: center;
     padding: 100px 20px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: background-image 0.3s ease; /* Makes the theme swap smooth */
+    background-size: 100% 100%; /* Forces both images to stretch to the exact same boundaries */
 }
+
+/* --- DARK MODE OVERRIDE --- */
+[data-theme="dark"] .hero-section {
+    background-image: url('../images/Flashy_Background_Dark.png');
+    background-size: 100% 100%;
+}
+
+
 
 .hero-section h1 {
     font-size: 80px;
     font-weight: 700;
     margin: 0;
-    color: black;
+    color: var(--black);
 }
 
 .hero-section p {
     font-size: 24px;
-    color: black;
+    color: var(--black);
     margin-bottom: 40px;
 }
 
@@ -385,6 +397,80 @@ body {
   overflow: hidden;
 }
 
+/* The switch container */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin: 0; /* Prevents alignment offsets */
+}
+
+/* Base slider setup */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--dark-gray); /* Dark gray for light mode track so white/yellow pop */
+  transition: .4s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px; /* Slightly more spacing inside the track */
+  box-sizing: border-box;
+}
+
+/* Changes the track color when checked */
+#theme-checkbox:checked + .slider {
+  background-color: var(--blue); /*  blue background for dark mode track */
+}
+
+/* Icon text styles for maximum visibility */
+.icon-sun, .icon-moon {
+  font-size: 16px; 
+  font-weight: 900; 
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  user-select: none;
+  z-index: 1;
+}
+
+/* Bright gold/yellow for the sun */
+.icon-sun {
+  color: var(--gold-yellow); 
+}
+
+/* Crisp, bright white for the moon */
+.icon-moon {
+  color: var(--white); 
+}
+
+/* Your existing knob code (z-index keeps it on top of the icons) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--white);
+  transition: .4s;
+  z-index: 2; /* Keeps the knob on top */
+}
+
+#theme-checkbox:checked + .slider:before {
+  transform: translateX(26px);
+  background-color: #000000; /* Turns knob black when checked */
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
 .nav-links {
   display: flex;
   gap: 30px;
@@ -419,7 +505,15 @@ body {
 .logo img {
   height: 120px;
   width: auto;
-  mix-blend-mode: multiply;
+  background-color: transparent;
+  /* transition: filter 0.3s ease; Makes the transition smooth when toggling */
+}
+
+[data-theme="dark"] .logo img {
+    /* mix-blend-mode: normal; */
+    background-color: #ffffff;
+    filter: invert(1) hue-rotate(180deg);
+    mix-blend-mode: screen;
 }
 
 /* Dark Mode Switch */
@@ -740,10 +834,14 @@ input:checked + .slider:before {
 .card-side { flex: 1; }
 
 .card-textarea {
-    background-color: var(--off-white);
-    border: 1px solid transparent;
-    height: 100px;
-    resize: vertical;
+  /* Inherits light mode background or dark mode background */
+  background-color: var(--white);
+  color: var(--dark-gray); 
+  border: 1px solid var(--lighter-gray); 
+}
+
+.card-textarea::placeholder {
+  color: var(--light-gray);
 }
 .card-textarea:focus {
     background-color: var(--white);
@@ -879,8 +977,10 @@ input:checked + .slider:before {
 }
 
 .input-hint-field {
-    background: var(--off-white);
-    border-color: transparent;
+  /* Inherits light mode background or dark mode background */
+  background-color: var(--off-white);
+  color: var(--dark-gray); 
+  border: 1px solid var(--lighter-gray); 
 }
 
 .btn-align-right {
@@ -950,13 +1050,21 @@ input:checked + .slider:before {
     font-family: system-ui, -apple-system, sans-serif;
     
     background-color: var(--off-white);
-    background-image: url("../images/flashcard_background.png");
+    background-image: url("../images/flashcard_background_light.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     
     overflow: hidden;
     padding: 40px 20px;
+    transition: background-image 0.3s ease; /* Makes the theme swap smooth */
+    background-size: 100% 100%; /* Forces both images to stretch to the exact same boundaries */
+}
+
+/* --- DARK MODE OVERRIDE --- */
+[data-theme="dark"] .flashy-flip-wrapper {
+    background-image: url('../images/Flashy_Background_Dark.png');
+    background-size: 100% 100%;
 }
 
 .back-to-decks {
@@ -988,7 +1096,7 @@ input:checked + .slider:before {
 .flashy-flip-deck-name {
     font-size: 24px;
     font-weight: 800;
-    color: var(--dark-gray);
+    color: var(--black);
     margin: 0 0 8px 0;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1191,7 +1299,7 @@ input:checked + .slider:before {
 .flashy-flip-progress-text {
     font-size: 12px;
     font-weight: 700;
-    color: var(--light-gray);
+    color: var(--gray);
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 12px;
@@ -1201,7 +1309,7 @@ input:checked + .slider:before {
     width: 100%;
     max-width: 400px;
     height: 6px;
-    background-color: var(--lightest-gray);
+    background-color: var(--lighter-gray);
     border-radius: 10px;
     margin: 0 auto;
     overflow: hidden;
@@ -1495,12 +1603,20 @@ input:checked + .slider:before {
 /* write mode*/
 .background {
     position: relative;
-    background-image: url('../images/flashcard_background.png');
+    background-image: url('../images/flashcard_background_light.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
     display: flex;
+    transition: background-image 0.3s ease; /* Makes the theme swap smooth */
+    background-size: 100% 100%; /* Forces both images to stretch to the exact same boundaries */
+}
+
+/* --- DARK MODE OVERRIDE --- */
+[data-theme="dark"] .background {
+    background-image: url('../images/Flashy_Background_Dark.png');
+    background-size: 100% 100%;
 }
 
 .study-container {
