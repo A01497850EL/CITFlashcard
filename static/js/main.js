@@ -40,6 +40,27 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+    if (toggleSwitch) {
+        // We removed the setup logic here, because the inline HTML scripts handled it!
+        
+        // Listen for when the user clicks the switch
+        toggleSwitch.addEventListener('change', function(e) {
+            if (e.target.checked) {
+                // Switch flipped ON -> Turn on Dark Mode and save to memory
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Switch flipped OFF -> Turn on Light Mode and save to memory
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+});
 
 // 2. DECK SEARCH & TAG FILTER FUNCTIONALITY AND TAG COLORS
 
