@@ -74,6 +74,7 @@ def show_decks():
 
 # creating decks
 @app.route("/decks/create", methods=["GET", "POST"])
+@login_required
 def create_deck():
     # If the user clicks "Save Deck" (Submitting the form)
     if request.method == "POST":
@@ -162,6 +163,7 @@ def delete_deck(deck_id):
     
 # Update Flashcard
 @app.route("/decks/<int:deck_id>/card/<int:card_id>/update", methods=["POST"])
+@login_required
 def update_card(deck_id, card_id):
     """
     Updates a card's information via a card's id
