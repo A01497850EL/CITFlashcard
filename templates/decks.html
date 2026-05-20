@@ -14,7 +14,7 @@
                 {% if deck.tags %}
                 <div class="deck-tags">
                     {% for junction in deck.tags %}
-                        <span class="tag-badge">{{ junction.tags.name }}</span>
+                        <span class="tag-badge search-tag" role="button" data-tag="{{ junction.tags.name|lower }}">{{ junction.tags.name }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -142,6 +142,10 @@
     {% else %}
         <h1 class="page-title">Your Decks</h1>
         
+        <div class="deck-search-container">
+            <input type="text" id="deckSearch" placeholder="Search decks by name, description, or tags..." class="input-field">
+        </div>
+
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
         {% endif %}
