@@ -605,6 +605,22 @@ body {
 
 .input-field::placeholder { color: #a0a0a0; }
 
+.deck-search-container {
+    margin-bottom: 25px;
+    width: 100%;
+    max-width: 400px;
+}
+
+#deckSearch {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-tag {
+    cursor: pointer;
+    user-select: none;
+}
+
 /* Button Styling for Decks Page */
 .btn-save {
     background-color: #111111;
