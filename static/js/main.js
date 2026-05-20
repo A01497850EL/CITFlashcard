@@ -1,9 +1,9 @@
-// ==========================================
+
 // 1. FLASHCARD ANSWER MODAL FUNCTIONALITY
-// ==========================================
+
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('answer-form');
-    if (!form) return; // Safely exits ONLY this block if not on the study page
+    if (!form) return; 
 
     const inputSection = document.getElementById('input-section');
     const feedbackArea = document.getElementById('feedback-area');
@@ -41,13 +41,43 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-// ==========================================
-// 2. DECK SEARCH & TAG FILTER FUNCTIONALITY
-// ==========================================
+
+
+// 2. DECK SEARCH & TAG FILTER FUNCTIONALITY AND TAG COLORS
+
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById('deckSearch');
     
-    // Core filtering logic helper
+    // Function to generate a consistent color based on the tag name 
+    function applyDynamicTagColors() {
+        const badges = document.querySelectorAll('.tag-badge');
+        badges.forEach(function(badge) {
+            const text = badge.textContent.trim().toLowerCase();
+            if (!text) return;
+
+            // Generate a simple hash value from the text 
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                hash = text.charCodeAt(i) + ((hash << 5) - hash);
+            }
+
+            // Convert hash to a readable color 
+            const hue = Math.abs(hash) % 360;
+            const saturation = 70; 
+            const lightness = 85;  
+            const textColor = lightness > 60 ? '#111111' : '#ffffff';
+
+            // Apply directly to the element's style property
+            badge.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            badge.style.color = textColor;
+            badge.style.border = 'none';
+        });
+    }
+
+    
+    applyDynamicTagColors();
+
+   
     function filterDecks(searchTerm) {
         const deckContainers = document.querySelectorAll('.decks-grid > .flashy-relative-container');
 
@@ -70,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Check if we just redirected here via a tag click from an individual deck page
+
     const urlParams = new URLSearchParams(window.location.search);
     const filterParam = urlParams.get('filterTag');
     if (filterParam && searchInput) {
@@ -78,12 +108,14 @@ document.addEventListener("DOMContentLoaded", function() {
         filterDecks(filterParam);
     }
 
-    // Exit early if the search input doesn't exist on this page
+    // If searchInput doesn't exist, we are inside a deck page
     if (!searchInput) {
-        // If we are on an individual deck page, redirect clicks to the main view with a query string
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('search-tag')) {
-                const clickedTag = e.target.getAttribute('data-tag');
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const clickedTag = e.target.getAttribute('data-tag') || e.target.textContent.toLowerCase().trim();
                 window.location.href = "/decks?filterTag=" + encodeURIComponent(clickedTag);
             }
         });
@@ -102,9 +134,8 @@ document.addEventListener("DOMContentLoaded", function() {
             e.preventDefault();
             e.stopPropagation();
 
-            const clickedTag = e.target.getAttribute('data-tag');
+            const clickedTag = e.target.getAttribute('data-tag') || e.target.textContent.toLowerCase().trim();
             
-            // Toggle behavior: if already searching this tag, clear it. Otherwise, search it.
             if (searchInput.value.toLowerCase().trim() === clickedTag) {
                 searchInput.value = '';
                 filterDecks('');
