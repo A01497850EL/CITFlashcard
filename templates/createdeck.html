@@ -5,6 +5,12 @@
 
     <div id="create-deck">
         <h1 class="page-title">Create Deck</h1>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for m in messages %}<p class="form-helper-text">{{ m }}</p>{% endfor %}
+            {% endif %}
+        {% endwith %}
         
         <form action="{{ url_for('create_deck') }}" method="POST">
             <div class="form-group">
