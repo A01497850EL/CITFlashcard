@@ -106,7 +106,8 @@ def view_deck(deck_id):
     try:
         deck = Deck.get_by_id(deck_id)
     except Deck.DoesNotExist:
-        abort(404)
+        flash(f"Deck {deck_id} not found. It may have been deleted or doesn't exist.")
+        return redirect(url_for("show_decks"))
     if deck.owner_id != current_user.id:
         flash("The deck you are attempting to access does not belong to you.")
         return redirect(url_for("show_decks"))
@@ -409,7 +410,7 @@ def flip_answer(card_id):
     else:
         # Invalid input safety check
         flash("Invalid response received.")
-        return redirect(url_for("flip_mode", deck_id=card.deck.id))
+        return redirect(url_for("flip_mode", deck_id=deck.id))
     # Save updated values to database
     card.save()
     next_index = request.form.get("index", 0, type=int) + 1

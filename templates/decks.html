@@ -34,6 +34,12 @@
                 </form>
             </div>
         </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for m in messages %}<p class="form-helper-text">{{ m }}</p>{% endfor %}
+            {% endif %}
+        {% endwith %}
             
         <div class="divider divider-sm"></div>
 
