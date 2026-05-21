@@ -1833,3 +1833,14 @@ input:checked + .slider:before {
 @media (max-width: 600px) {
     .card-row { flex-direction: column; }
 }
+
+.card-confidence {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--gray);
+}
+
+.card-mastered {
+    color: var(--green);
+    font-weight: bold;
+}
