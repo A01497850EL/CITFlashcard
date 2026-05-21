@@ -470,13 +470,22 @@ def export_deck(deck_id):
     deck_data = {
         "name": deck.name,
         "description": deck.description,
-        "cards": []
+        "cards": [],
+        "deck_tags": []
     }
+    #store deck tags
+    for deck_tag in deck.tags:
+        deck_data["deck_tags"].append(deck_tag.tags.name)
+    #store cards + card tags
     for card in cards:
+        card_tags = []
+        for card_tag in card.card_link:
+            card_tags.append(card_tag.tags.name)
         deck_data["cards"].append({
             "front": card.front,
             "back": card.back,
-            "hint": card.hint
+            "hint": card.hint,
+            "card_tags": card_tags
         })
     # Convert Python dictionary into JSON string
     json_data = json.dumps(deck_data, indent=4)
@@ -509,14 +518,21 @@ def import_deck():
                 description=deck_data.get("description"),
                 owner=current_user.id
             )
-            # Create cards
+            # Create deck tags
+            for tag_name in deck_data.get("deck_tags", []):
+                tag, _ = Tag.get_or_create(name=tag_name)
+                DeckTagJunction.create(decks=deck, tags=tag)
+            # Create cards + tags
             for card_data in deck_data.get("cards", []):
-                Card.create(
+                card = Card.create(
                     deck=deck,
                     front=card_data["front"],
                     back=card_data["back"],
                     hint=card_data.get("hint")
                 )
+                for tag_name in card_data.get("card_tags", []):
+                    tag, _ = Tag.get_or_create(name=tag_name)
+                    CardTagJunction.create(cards=card, tags=tag)
             flash("Deck imported successfully.")
             return redirect(url_for("view_deck", deck_id=deck.id))
         except (json.JSONDecodeError, KeyError):
