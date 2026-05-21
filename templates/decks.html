@@ -38,6 +38,12 @@
                 </form>
             </div>
         </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for m in messages %}<p class="form-helper-text">{{ m }}</p>{% endfor %}
+            {% endif %}
+        {% endwith %}
             
         <div class="divider divider-sm"></div>
 
@@ -153,13 +159,19 @@
         {% if decks.count() == 0 %}
             <p class="no-decks-created">You haven't created any decks yet. Make one below!</p>
         {% endif %}
+  
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for m in messages %}<p class="form-helper-text">{{ m }}</p>{% endfor %}
+            {% endif %}
+        {% endwith %}
 
         <div class="import-btn-wrapper">
             <a href="{{ url_for('import_deck') }}" class="flashy-btn-study flashy-btn-flip">
              Import Deck
             </a>
         </div>
-
+        
         <div class="decks-grid">
             <a href="{{ url_for('create_deck') }}" class="deck-item blank-deck-item">
                 <span class="plus-icon">+</span>
