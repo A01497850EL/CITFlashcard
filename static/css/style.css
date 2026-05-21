@@ -335,50 +335,33 @@ body {
 
 /* End of CTA Banner on Landing Page */
 
-/* Footer */
-.site-footer {
+/* FOOTER STYLES */
+.flashy-footer-wrapper {
   background-color: var(--white);
-  padding: 20px 40px;
+  padding: 40px 20px;
   border-top: 1px solid var(--black);
-  border-bottom: 1px solid var(--black);
+  margin-top: 60px;
 }
 
-.footer-container {
-  max-width: 1200px;
+.flashy-footer-container {
+  max-width: 600px; /* Keeps the links centered and constrained */
   margin: 0 auto;
   display: flex;
-  justify-content: center;
-  gap: 120px;
+  justify-content: space-between; /* Spreads the 4 links evenly */
+  align-items: center;
 }
 
-.footer-column h4 {
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--dark-gray);
-  margin-bottom: 20px;
-}
-
-.footer-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-column li {
-  margin-bottom: 12px;
-}
-
-.footer-column a {
+.flashy-footer-container a {
   text-decoration: none;
   color: var(--gray);
   font-size: 14px;
+  font-weight: 500;
   transition: color 0.2s ease;
 }
 
-.footer-column a:hover {
+.flashy-footer-container a:hover {
   color: var(--black);
 }
-
 /* END OF FOOTER */
 
 /* Nav-Bar for all pages*/
@@ -474,8 +457,11 @@ body {
 .nav-links {
   display: flex;
   gap: 30px;
+  flex: 1;
+  align-items: center;
 }
-.nav-links a {
+
+.nav-links a:not(.flashy-nav-btn-auth) {
   text-decoration: none;
   color: var(--black);
   font-size: larger;
@@ -483,7 +469,7 @@ body {
   position: relative;
 }
 
-.nav-links a::after {
+.nav-links a:not(.flashy-nav-btn-auth)::after {
   content: '';
   position: absolute;
   width: 0;
@@ -494,12 +480,8 @@ body {
   transition: width 0.3s ease-in-out;
 }
 
-.nav-links a:hover::after {
+.nav-links a:not(.flashy-nav-btn-auth):hover::after {
   width: 100%;
-}
-
-.nav-links a:hover {
-  text-decoration: none; 
 }
 
 .logo img {
@@ -569,6 +551,66 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* --- NAVBAR AUTHENTICATION BUTTONS --- */
+
+.flashy-nav-login {
+    margin-left: auto;
+}
+
+.flashy-nav-logout-form {
+    margin: 0 0 0 auto;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.flashy-nav-btn-auth {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    color: #ffffff !important;
+    padding: 8px 22px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none !important;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(136, 0, 255, 0.15);
+    margin-left: 4px;
+}
+
+.flashy-nav-btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(136, 0, 255, 0.3);
+}
+
+/* Distinct style for the Logout button */
+.flashy-nav-btn-logout {
+    background: transparent;
+    border: 2px solid var(--purple);
+    color: var(--black) !important;
+    box-shadow: none;
+    margin-left: 0;
+}
+
+.flashy-nav-btn-logout:hover {
+    background: var(--purple);
+    color: #ffffff !important;
+}
+
+/* Dark Mode Override for Logout Button text */
+[data-theme="dark"] .flashy-nav-btn-logout {
+    border-color: var(--blue);
+}
+
+[data-theme="dark"] .flashy-nav-btn-logout:hover {
+    background: var(--blue);
 }
 
 /* END OF NAV BAR */

@@ -26,6 +26,17 @@
           <a href="{{ url_for('show_decks') }}">Decks</a>
           <a href="{{ url_for('aboutus') }}">About Us</a>
 
+          <!-- Authentication Logic with Specific Classes -->
+          {% if current_user.is_authenticated %}
+            <!-- Logout requires a POST request per app.py -->
+            <form action="{{ url_for('logout') }}" method="POST" class="flashy-nav-logout-form">
+              <button type="submit" class="flashy-nav-btn-auth flashy-nav-btn-logout">Log Out</button>
+            </form>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="flashy-nav-login">Log In</a>
+            <a href="{{ url_for('register') }}" class="flashy-nav-btn-auth">Register</a>
+          {% endif %}
+
           <label class="theme-switch" for="theme-checkbox">
             <input type="checkbox" id="theme-checkbox" />
             <div class="slider round">
@@ -39,7 +50,6 @@
                     document.getElementById('theme-checkbox').checked = true;
                 }
           </script>
-
         </nav>
       </header>
 
@@ -48,34 +58,16 @@
     </main>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </div> <!-- Closing hero div based on previous structure -->
 </body>
 </html>
 
 <!-- Footer -->
-<footer class="site-footer">
-  <div class="footer-container">
-    
-    <!-- Column 1: Information -->
-    <div class="footer-column">
-      <h4>Information</h4>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">FAQ</a></li>
-      </ul>
-    </div>
-
-
-    <!-- Column 3: Socials -->
-    <div class="footer-column">
-      <h4>Socials</h4>
-      <ul>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">X</a></li>
-        <li><a href="#">YouTube</a></li>
-        <li><a href="#">LinkedIn</a></li>
-      </ul>
-    </div>
-
+<footer class="flashy-footer-wrapper">
+  <div class="flashy-footer-container">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('show_decks') }}">Decks</a>
+    <a href="{{ url_for('aboutus') }}">About Us</a>
+    <a href="#">Terms of Service</a>
   </div>
 </footer>
