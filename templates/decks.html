@@ -126,6 +126,15 @@
                         </div>
                     </div>
 
+                    <!-- Add this below the card row -->
+                    <div class="card-confidence">
+                        {% if card.mastered %}
+                            <span class="card-mastered">✅ Mastered</span>
+                        {% else %}
+                            <span>Confidence: {{ card.confidence_score }} / 3</span>
+                        {% endif %}
+                    </div>
+
                     {% if card.hint or card_tags|length > 0 %}
                     <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eaeaea;">
                         {% if card.hint %}
