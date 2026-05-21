@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="flashy-flip-wrapper">
+
+    <div class="back-to-decks">
+        <a href="{{ url_for('show_decks') }}" class="deck-nav-back">
+            &larr; Back to all decks
+        </a>
+    </div>
+
+    <div class="flashy-flip-header">
+        <h2 class="flashy-flip-deck-name">
+            Import Deck
+        </h2>
+
+        <div class="flashy-flip-progress-text">
+            JSON files only
+        </div>
+
+        <div class="flashy-progress-track">
+            <div class="flashy-progress-fill" style="width: 100%;"></div>
+        </div>
+    </div>
+
+    <div class="flashy-flip-scene" id="drop-zone">
+
+        <div class="flashy-flip-card">
+
+            <div class="flashy-flip-face flashy-flip-front import-card-face">
+
+                <span class="flashy-flip-label">
+                    Import
+                </span>
+
+                <p class="flashy-flip-content-text">
+                    Drag and drop your file here
+                </p>
+
+                <form
+                    action="{{ url_for('import_deck') }}"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    id="import-form"
+                >
+                    <div class="import-upload-box">
+                <label for="deck_file" class="upload-click-area">
+
+                    <div class="upload-icon">
+                        <img 
+                            src="{{ url_for('static', filename='images/upload_icon.png') }}"
+                            alt="Upload Icon"
+                            class="upload-icon-img"
+                        >
+                    </div>
+                    <div class="custom-file-upload">
+                        Upload File
+                    </div>
+
+                </label>
+
+                            <input
+                            type="file"
+                            id="deck_file"
+                            name="deck_file"
+                            accept=".json"
+                            required
+                            hidden
+                        >
+                        <p id="file-name">
+                            No file selected
+                        </p>
+
+                    </div>
+
+                    <div class="flashy-flip-btn-group" style="margin-top: 25px;">
+                        <a
+                            href="{{ url_for('show_decks') }}"
+                            class="flashy-flip-btn-wrong"
+                            style="text-decoration:none;"
+                        >
+                            Cancel
+                        </a>
+                        <button
+                            type="submit"
+                            class="flashy-flip-btn-correct"
+                        >
+                            Import Deck
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

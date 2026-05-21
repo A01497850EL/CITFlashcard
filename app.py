@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, flash
+from flask import Flask, render_template, request, redirect, url_for, abort, flash, Response
 from init_db import init_db, db, Deck, Card, Tag, DeckTagJunction, User, CardTagJunction
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from peewee import JOIN
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -451,6 +452,95 @@ def update_deck(deck_id):
             DeckTagJunction.create(decks=deck, tags=tag)
     flash("Deck updated successfully.")
     return redirect(url_for("show_decks", deck_id=deck.id))
+
+# EXPORT DECK
+@app.route("/decks/<int:deck_id>/export")
+@login_required
+def export_deck(deck_id):
+    deck = Deck.get_or_none(Deck.id == deck_id)
+    # Validation
+    if not deck:
+        flash("Error: Deck not found.")
+        return redirect(url_for("show_decks"))
+    # Ownership check
+    if deck.owner_id != current_user.id:
+        flash("You do not have permission to export this deck.")
+        return redirect(url_for("show_decks"))
+    # Get cards
+    cards = Card.select().where(Card.deck == deck)
+    # Convert deck into JSON format
+    deck_data = {
+        "name": deck.name,
+        "description": deck.description,
+        "cards": [],
+        "deck_tags": []
+    }
+    #store deck tags
+    for deck_tag in deck.tags:
+        deck_data["deck_tags"].append(deck_tag.tags.name)
+    #store cards + card tags
+    for card in cards:
+        card_tags = []
+        for card_tag in card.card_link:
+            card_tags.append(card_tag.tags.name)
+        deck_data["cards"].append({
+            "front": card.front,
+            "back": card.back,
+            "hint": card.hint,
+            "card_tags": card_tags
+        })
+    # Convert Python dictionary into JSON string
+    json_data = json.dumps(deck_data, indent=4)
+    # Return downloadable JSON file
+    return Response(
+        json_data,
+        mimetype="application/json",
+        headers={
+            "Content-Disposition": f"attachment; filename={deck.name}.json"
+        }
+    )
+
+# IMPORT DECK
+@app.route("/decks/import", methods=["GET", "POST"])
+@login_required
+def import_deck():
+    if request.method == "POST":
+        # Get uploaded file
+        uploaded_file = request.files.get("deck_file")
+        # Validation
+        if not uploaded_file:
+            flash("Error: No file uploaded.")
+            return redirect(url_for("show_decks"))
+        try:
+            # Load JSON data
+            deck_data = json.load(uploaded_file)
+            # Create deck
+            deck = Deck.create(
+                name=deck_data["name"],
+                description=deck_data.get("description"),
+                owner=current_user.id
+            )
+            # Create deck tags
+            for tag_name in deck_data.get("deck_tags", []):
+                tag, _ = Tag.get_or_create(name=tag_name)
+                DeckTagJunction.create(decks=deck, tags=tag)
+            # Create cards + tags
+            for card_data in deck_data.get("cards", []):
+                card = Card.create(
+                    deck=deck,
+                    front=card_data["front"],
+                    back=card_data["back"],
+                    hint=card_data.get("hint")
+                )
+                for tag_name in card_data.get("card_tags", []):
+                    tag, _ = Tag.get_or_create(name=tag_name)
+                    CardTagJunction.create(cards=card, tags=tag)
+            flash("Deck imported successfully.")
+            return redirect(url_for("view_deck", deck_id=deck.id))
+        except (json.JSONDecodeError, KeyError):
+            flash("Error: Invalid deck file.")
+            return redirect(url_for("show_decks"))
+    return render_template("import.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

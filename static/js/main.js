@@ -39,6 +39,36 @@ document.addEventListener("DOMContentLoaded", function() {
         form.submit();
     };
 });
+// Drag and Drop for Deck Import
+const dropZone = document.getElementById("drop-zone");
+if (dropZone) {
+const fileInput = document.getElementById("deck_file");
+const fileName = document.getElementById("file-name");
+fileInput.addEventListener("change", function () {
+    fileName.textContent =
+        this.files[0]?.name || "No file chosen";
+});
+dropZone.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
+});
+dropZone.addEventListener("dragleave", function () {
+    dropZone.classList.remove("drag-over");
+});
+dropZone.addEventListener("drop", function (e) {
+    e.preventDefault();
+    dropZone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith(".json")) {
+        fileInput.files = e.dataTransfer.files;
+        fileName.textContent = file.name;
+    } else {
+        fileName.textContent =
+            "Please upload a JSON file.";
+    }
+});
+
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     
