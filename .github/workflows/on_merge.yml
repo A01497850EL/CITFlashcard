@@ -4,7 +4,7 @@ name: Deploy Python Application
 on:
   pull_request:
     branches:
-      - dev
+      - main
     types:
       - closed
 
