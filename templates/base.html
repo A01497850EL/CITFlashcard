@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    </script>
+</head>
+<body>
+    <!-- Nav Bar -->
+    <div class="hero">
+      <header class="navbar">
+        <div class="logo">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/Flashy_Logo.png') }}" alt="Flashy Logo">
+          </a>
+        </div>
+        <nav class="nav-links">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('show_decks') }}">Decks</a>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
+
+          <!-- Authentication Logic with Specific Classes -->
+          {% if current_user.is_authenticated %}
+            <!-- Logout requires a POST request per app.py -->
+            <form action="{{ url_for('logout') }}" method="POST" class="flashy-nav-logout-form">
+              <button type="submit" class="flashy-nav-btn-auth flashy-nav-btn-logout">Log Out</button>
+            </form>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="flashy-nav-login">Log In</a>
+            <a href="{{ url_for('register') }}" class="flashy-nav-btn-auth">Register</a>
+          {% endif %}
+
+          <label class="theme-switch" for="theme-checkbox">
+            <input type="checkbox" id="theme-checkbox" />
+            <div class="slider round">
+              <span class="icon-sun">☼</span>
+              <span class="icon-moon">☾</span>
+            </div>
+          </label>
+
+          <script>
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.getElementById('theme-checkbox').checked = true;
+                }
+          </script>
+        </nav>
+      </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </div> <!-- Closing hero div based on previous structure -->
+</body>
+</html>
+
+<!-- Footer -->
+<footer class="flashy-footer-wrapper">
+  <div class="flashy-footer-container">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('show_decks') }}">Decks</a>
+    <a href="{{ url_for('aboutus') }}">About Us</a>
+    <a href="https://github.com/A01497850EL/CITFlashcard" target="_blank" rel="noopener noreferrer">Github</a>
+  </div>
+</footer>
